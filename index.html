@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GroundNode Live — Vahnim</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">GN</span>
+      <div class="brand-text">
+        <span class="brand-name">VAHNIM</span>
+        <span class="brand-sub">GroundNode Live</span>
+      </div>
+    </div>
+    <div class="live-badge"><span class="live-dot"></span> Autonomous network — simulated</div>
+  </header>
+
+  <div class="controls-bar">
+    <div class="control">
+      <label>Fleet traffic — <span id="droneCountVal">8</span> drones</label>
+      <div class="control-row">
+        <button id="trafficDown" class="stepper" aria-label="Remove drone from fleet">−</button>
+        <input type="range" id="droneCount" min="1" max="20" value="8" step="1" />
+        <button id="trafficUp" class="stepper" aria-label="Add drone to fleet">+</button>
+      </div>
+    </div>
+
+    <div class="control">
+      <label>Mission demand — <span id="missionDemandVal">Medium</span></label>
+      <input type="range" id="missionDemand" min="0" max="1" value="0.5" step="0.01" />
+    </div>
+
+    <div class="control">
+      <label>Turnaround mode</label>
+      <div class="toggle" id="modeToggle">
+        <button class="toggle-btn active" data-mode="charge">Charge in place</button>
+        <button class="toggle-btn" data-mode="swap">Battery swap</button>
+      </div>
+    </div>
+
+    <div class="control playback">
+      <button id="pauseBtn" class="ghost-btn">Pause</button>
+      <button id="resetBtn" class="ghost-btn">Reset</button>
+    </div>
+  </div>
+
+  <div class="metrics-strip">
+    <div class="metric-tile">
+      <span class="metric-value" id="mMissions">0</span>
+      <span class="metric-label">Autonomous missions completed</span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-value" id="mIntervention">0</span>
+      <span class="metric-label">Human intervention events <small>(trending to zero)</small></span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-value" id="mUptime">100%</span>
+      <span class="metric-label">Fleet uptime</span>
+    </div>
+    <div class="metric-tile">
+      <span class="metric-value" id="mSaved">$0</span>
+      <span class="metric-label">Est. cost saved vs. manual ops</span>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <aside class="comms-panel">
+      <h2>Vertipad Comms</h2>
+      <ul id="commsFeed" class="comms-feed"></ul>
+    </aside>
+
+    <div class="map-wrap">
+      <canvas id="mapCanvas"></canvas>
+      <div id="stationCards" class="station-cards"></div>
+    </div>
+
+    <aside class="detail-panel" id="detailPanel">
+      <div class="detail-empty" id="detailEmpty">Select a GroundNode station or a drone on the map to see live details.</div>
+      <div class="detail-content" id="detailContent" hidden></div>
+    </aside>
+  </div>
+
+</div>
+
+<script src="sim.js"></script>
+<script src="render.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
