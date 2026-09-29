@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vahnim Aircraft models</title>
+<link rel="stylesheet" href="n1.css">
+<style>
+ body{margin:0;overflow:hidden}
+ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+ .hangar-ui{position:fixed;left:20px;top:60px;display:grid;gap:10px;z-index:2;width:min(360px,calc(100vw - 40px));max-height:calc(100vh - 80px);overflow:auto}
+ .hangar-ui h1{font-size:20px;margin:0;letter-spacing:.02em}
+ .row{display:flex;gap:8px;flex-wrap:wrap}
+ .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+ .btn.mini{padding:5px 11px;font-size:12px}
+ .what{font-size:13.5px;color:#d3e2ea;margin:0}
+ .modeinfo{font-size:12.5px;color:var(--teal);margin:0;min-height:36px}
+ dl.specs{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:13px}
+ dl.specs dt{color:var(--muted)}dl.specs dd{margin:0;color:var(--text)}
+</style><link rel="stylesheet" href="site-nav.css"></head>
+<body class="n1-body">
+<canvas id="c"></canvas>
+<div class="hangar-ui glass">
+ <div class="eyebrow">Aircraft models</div>
+ <h1 id="title">Vahnim V6 · air taxi (UAM)</h1>
+ <div class="row"><button class="btn" data-m="UAM" aria-pressed="true">Air taxi (UAM)</button><button class="btn" data-m="UAV" aria-pressed="false">Drone (UAV)</button></div>
+ <p class="what" id="what"></p>
+ <div class="label">How is it flying?</div>
+ <div class="row"><button class="btn mini" data-mode="hover" aria-pressed="true">Hover</button><button class="btn mini" data-mode="cruise" aria-pressed="false">Cruise</button><button class="btn mini" data-mode="off" aria-pressed="false">Parked</button><button class="btn mini" id="turn" aria-pressed="true">Turntable</button></div>
+ <p class="modeinfo" id="modeinfo"></p>
+ <div class="label">Key facts</div>
+ <dl class="specs" id="specs"></dl>
+ <p class="muted small">Drag to look around, scroll to zoom. Numbers are illustrative demo values, not a real aircraft.</p>
+</div>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {createAircraft,createSkyEnvironment} from './aircraft-model.js';
+const $=id=>document.getElementById(id);
+const canvas=$('c'),renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,.1,2000);
+const sky=createSkyEnvironment(renderer);scene.environment=sky.envMap;scene.add(sky.dome);scene.fog=new THREE.Fog('#cfe0e8',60,400);
+const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.target.set(0,2.4,0);controls.maxPolarAngle=Math.PI*.49;
+scene.add(new THREE.HemisphereLight('#e7f5ff','#56706b',1.1));
+const sun=new THREE.DirectionalLight('#fff0d7',2.6);sun.position.set(-18,28,14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-16,right:16,top:16,bottom:-16,near:1,far:90});scene.add(sun);
+const floor=new THREE.Mesh(new THREE.CircleGeometry(60,64),new THREE.MeshStandardMaterial({color:'#5d7079',roughness:.85}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+const ring=new THREE.Mesh(new THREE.RingGeometry(11.6,12,64),new THREE.MeshBasicMaterial({color:'#5be9c5'}));ring.rotation.x=-Math.PI/2;ring.position.y=.02;scene.add(ring);
+
+// Plain-language facts (illustrative demo values, matching flight-dynamics.js)
+const INFO={
+ UAM:{title:'Vahnim V6 · air taxi (UAM)',what:'A passenger air taxi. Six small rotors lift it straight up like a helicopter; a propeller at the back pushes it forward, and the wing carries the weight once it is moving.',
+  specs:[['Size','About 12 m long, 15 m wingspan'],['Weight','1,800 kg'],['Top speed','20 m/s (72 km/h) in this demo'],['Battery','100 kWh; hovering uses about 200 kW'],['Rotors','6 lift rotors + 1 push propeller'],['Landing','Needs a whole pad to itself']],
+  modes:{hover:'Hover: all six rotors are lifting. This is how it takes off and lands.',cruise:'Cruise: the wing carries the weight, so the lift rotors stop and the rear propeller pushes it along.',off:'Parked: everything is switched off, only the lights stay on.'},height:3.2},
+ UAV:{title:'Vahnim S4 · drone (UAV)',what:'A small drone for deliveries and inspections. Four propellers sit inside rings (ducts) so the blades are protected. A camera ball hangs under the nose.',
+  specs:[['Size','About 4 m across'],['Weight','14 kg'],['Top speed','14 m/s (50 km/h) in this demo'],['Battery','1.4 kWh; hovering uses under 1 kW'],['Rotors','4 ducted propellers'],['Landing','Up to three share one pad']],
+  modes:{hover:'Hover: all four propellers hold it up. It can stay perfectly still.',cruise:'Forward flight: the drone tilts its nose down and all four propellers push it along.',off:'Parked: propellers stopped, resting on its skids.'},height:1.4}
+};
+let craft=null,type='UAM',mode='hover',turn=true;
+const cur={rpm:1,pusher:0,y:3.2,pitch:0};
+function load(t){type=t;if(craft)scene.remove(craft);craft=createAircraft(t,{callsign:t==='UAM'?'VH-101':'S4-07',cargo:t==='UAV'});scene.add(craft);
+ const i=INFO[t];$('title').textContent=i.title;$('what').textContent=i.what;$('specs').replaceChildren(...i.specs.flatMap(([k,v])=>{const a=document.createElement('dt'),b=document.createElement('dd');a.textContent=k;b.textContent=v;return [a,b];}));
+ if(t==='UAM'){camera.position.set(17,8,15);controls.target.set(0,3.4,0);}else{camera.position.set(4.6,2.6,4.2);controls.target.set(0,1.6,0);}
+ controls.update();document.querySelectorAll('[data-m]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===t)));setMode(mode);}
+function setMode(m){mode=m;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===m)));$('modeinfo').textContent=INFO[type].modes[m];}
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>load(b.dataset.m));
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+$('turn').onclick=e=>{turn=!turn;e.target.setAttribute('aria-pressed',String(turn));};
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();load('UAM');
+let last=performance.now(),t=0;
+renderer.setAnimationLoop(now=>{const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;t+=dt;
+ const uam=type==='UAM',k=1-Math.exp(-dt*2.2);
+ const want={hover:{rpm:1,pusher:0,y:INFO[type].height,pitch:0},cruise:{rpm:uam?0:.85,pusher:uam?1:0,y:INFO[type].height+1,pitch:uam?-.03:-.16},off:{rpm:0,pusher:0,y:0,pitch:0}}[mode];
+ for(const key of Object.keys(cur))cur[key]+=(want[key]-cur[key])*k;
+ const bob=cur.y>.2?Math.sin(t*1.6)*.06:0;
+ craft.position.y=cur.y+bob;craft.rotation.x=cur.pitch+(cur.y>.2?Math.sin(t*1.1)*.008:0);
+ craft.userData.animate(dt,cur.rpm,{pusher:cur.pusher,time:t,flying:cur.y>.3});
+ if(turn)craft.rotation.y+=dt*.25;controls.update();renderer.render(scene,camera);});
+window.__hangar={load,setMode,setTurn:v=>{turn=v;},camera,controls};
+</script><script src="site-nav.js"></script></body></html>

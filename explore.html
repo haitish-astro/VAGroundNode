@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Explore — Vahnim</title>
+<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="site-nav.css">
+<style>
+ body{min-height:100vh}
+ .wrap{max-width:1180px;margin:0 auto;padding:36px 24px 60px}
+ h1{font-size:clamp(32px,5vw,50px);letter-spacing:-.02em;margin:8px 0 10px;background:linear-gradient(90deg,#fff,#8fe9d3);-webkit-background-clip:text;background-clip:text;color:transparent}
+ .lead{font-size:17px;color:#b7ccd6;max-width:64ch;margin-bottom:28px}
+ .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .card{display:grid;gap:10px;align-content:start;padding:20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(17,36,52,.65),rgba(10,21,32,.65));color:var(--text);text-decoration:none;transition:border-color .15s,transform .15s}
+ .card:hover{border-color:var(--teal);transform:translateY(-2px)}
+ .card h2{font-size:21px;margin:0}
+ .tag{display:inline-block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--teal)}
+ .tag.med{color:var(--amber)}.tag.adv{color:var(--violet)}
+ .card p{margin:0;color:#c4d6de;font-size:14.5px}
+ .card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
+ .card dt{color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-size:11px;padding-top:2px}
+ .card dd{margin:0;color:#dbe8ee}
+ .go{color:var(--teal);font-weight:600;font-size:13px;margin-top:2px}
+ .glossary{margin-top:34px;padding:20px;border:1px solid var(--line);border-radius:16px;background:#0a1620}
+ .glossary h2{font-size:18px;margin:0 0 10px}
+ .glossary dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0;font-size:14px}.glossary dt{color:var(--teal);font-weight:700}.glossary dd{margin:0;color:#c4d6de}
+ @media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style></head>
+<body class="n1-body">
+<main class="wrap">
+  <div class="eyebrow">Explore</div>
+  <h1>Everything else you can play with</h1>
+  <p class="lead">The city simulation is home, and Ground-N1 is the main demo. These pages let you look closer at the aircraft, the landing pad and the messages between aircraft and ground. Start with the first one: it explains itself as you go.</p>
+
+  <div class="grid">
+    <a class="card" href="comms.html">
+      <span class="tag">Start here · easiest</span>
+      <h2>Cockpit encounter</h2>
+      <p>A guided practice landing. You sit in the air taxi's cockpit seat while a coach tells you, in plain words, what is happening and what to press next.</p>
+      <dl><dt>Try</dt><dd>Follow the coach through a full landing, then press "Block the pad" and watch the plane go around and pick another pad.</dd>
+      <dt>Good for</dt><dd>First-time viewers, demos to non-technical people.</dd></dl>
+      <span class="go">Open the guided encounter →</span>
+    </a>
+    <a class="card" href="hangar.html">
+      <span class="tag">Look closer</span>
+      <h2>Aircraft models</h2>
+      <p>A turntable for the two aircraft: the passenger air taxi (UAM) and the small drone (UAV). See how big they are and how they fly.</p>
+      <dl><dt>Try</dt><dd>Switch between hover, cruise and rotors off. Drag to look underneath.</dd>
+      <dt>Good for</dt><dd>Showing the designs and the numbers behind them.</dd></dl>
+      <span class="go">Open the hangar →</span>
+    </a>
+    <a class="card" href="smart-pad.html">
+      <span class="tag med">Concept</span>
+      <h2>Smart pad</h2>
+      <p>A landing pad that thinks: lights that guide the aircraft, sensors that spot trouble, power for charging, and a radio link to talk to the aircraft.</p>
+      <dl><dt>Try</dt><dd>Click any part of the pad or the list on the right, then press the exploded view.</dd>
+      <dt>Good for</dt><dd>Explaining why the ground needs to be part of the system.</dd></dl>
+      <span class="go">Open the smart pad →</span>
+    </a>
+    <a class="card" href="coordination-lab.html">
+      <span class="tag adv">Advanced</span>
+      <h2>Integration lab</h2>
+      <p>A workshop for harder situations between aircraft and ground: a visitor aircraft from another operator, an unknown aircraft, offers that run out of time, and lost links.</p>
+      <dl><dt>Try</dt><dd>Connect the visitor aircraft, then break the link halfway through a landing.</dd>
+      <dt>Good for</dt><dd>Engineers checking that the rules hold up when things go wrong.</dd></dl>
+      <span class="go">Open the lab →</span>
+    </a>
+  </div>
+
+  <section class="glossary" aria-label="Plain-language glossary">
+    <h2>Words you will see</h2>
+    <dl>
+      <dt>UAM</dt><dd>Urban air mobility aircraft: an electric air taxi that carries passengers.</dd>
+      <dt>UAV</dt><dd>A small drone with no one on board, used for deliveries and inspections.</dd>
+      <dt>GroundNode</dt><dd>The landing pad and the computer that talks to aircraft and looks after them.</dd>
+      <dt>Clearance</dt><dd>Permission to land or take off on one named pad, valid for a short time.</dd>
+      <dt>Read-back</dt><dd>The pilot repeats a short code from the clearance so both sides know they agree.</dd>
+      <dt>Verified message</dt><dd>A message with a check that proves who sent it and that nobody changed it.</dd>
+      <dt>Go-around</dt><dd>Cancelling a landing at the last moment: climb, hold and try again.</dd>
+      <dt>Hover</dt><dd>Staying still in the air, like a helicopter.</dd>
+    </dl>
+  </section>
+</main>
+<script src="site-nav.js"></script>
+</body></html>

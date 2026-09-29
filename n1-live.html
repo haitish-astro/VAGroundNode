@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ground-N1 Live — GN Terminal</title>
+<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="n1-live.css">
+<link rel="stylesheet" href="site-nav.css"></head>
+<body class="n1-body live">
+<canvas id="scene" aria-label="Live 3D view of the five-pad GroundNode terminal"></canvas>
+<div id="fallback" class="fallback" hidden>3D could not initialise (WebGL unavailable). The pilot and ground screens still work.</div>
+
+<div class="hud" id="hud">
+  <div class="hud-top">
+    <div class="glass tag"><span class="brand-mark">GN</span><div><b>GROUND-N1 · LIVE</b><small id="scenarioTag">Terminal view</small></div></div>
+    <div class="glass phase-card"><small>VH-101</small><b id="phase">—</b><span class="pill" id="linkPill"><i class="dot" id="linkDot"></i><span id="linkTxt">…</span></span></div>
+  </div>
+  <div class="caption" id="caption" hidden></div>
+  <div class="hud-bottom">
+    <div class="glass telemetry">
+      <div><small>ALT</small><b id="tAlt">—</b></div><div><small>GS</small><b id="tGs">—</b></div><div><small>V/S</small><b id="tVs">—</b></div>
+      <div><small>HDG</small><b id="tHdg">—</b></div><div><small>BATT</small><b id="tBat">—</b></div><div><small>PAD</small><b id="tPad">—</b></div>
+    </div>
+    <div class="glass ticker" id="ticker" aria-live="polite"></div>
+    <div class="glass cams" role="group" aria-label="Camera">
+      <button class="btn mini" data-cam="auto" aria-pressed="true"><kbd>1</kbd> Director</button>
+      <button class="btn mini" data-cam="chase" aria-pressed="false"><kbd>2</kbd> Chase</button>
+      <button class="btn mini" data-cam="pad" aria-pressed="false"><kbd>3</kbd> Pad cam</button>
+      <button class="btn mini" data-cam="tower" aria-pressed="false"><kbd>4</kbd> Tower</button>
+      <button class="btn mini" data-cam="orbit" aria-pressed="false"><kbd>5</kbd> Orbit</button>
+      <button class="btn mini" data-cam="cockpit" aria-pressed="false"><kbd>6</kbd> Cockpit seat</button>
+      <button class="btn mini" id="hudToggle"><kbd>H</kbd> Clean feed</button>
+    </div>
+  </div>
+</div>
+
+<script src="city.js"></script><script src="n1-link.js"></script>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+<script type="module" src="n1-live.js"></script>
+<script src="site-nav.js"></script></body></html>

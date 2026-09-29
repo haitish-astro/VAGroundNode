@@ -54,6 +54,7 @@
 
     const bgImage = loadImage(BACKGROUND_SRC);
     const droneImage = loadImage(DRONE_SPRITE_SRC);
+    const uamImage = loadImage('assets/evtol-v1.png');
 
     function resize() {
       // Re-read every time, not just at construction — devicePixelRatio can
@@ -73,7 +74,7 @@
     // image, station markers, and drone positions all share one mapping and
     // never drift apart at different viewport sizes.
     function transform(state) {
-      const scale = Math.max(canvas.width / state.mapW, canvas.height / state.mapH);
+      const scale = Math.min(canvas.width / state.mapW, canvas.height / state.mapH);
       const offX = (canvas.width - state.mapW * scale) / 2;
       const offY = (canvas.height - state.mapH * scale) / 2;
       return { scale, offX, offY };
@@ -242,11 +243,13 @@
 
     function drawDrone(state, drone, tf, selected) {
       const pos = drone.pos;
-      const p = toScreen(tf, pos.x, pos.y);
+      const p = toScreen(tf, pos.x, pos.y - drone.altitude);
+      const sprite = drone.aircraftType === 'UAM' ? uamImage : droneImage;
       const docked = DOCKED_LIKE.has(drone.state);
-      const scaleMul = docked ? DOCKED_SCALE : 1;
-      const width = DRONE_BASE_WIDTH * tf.scale * scaleMul;
-      const aspect = ready(droneImage) ? droneImage.naturalHeight / droneImage.naturalWidth : 0.75;
+      // Perspective decreases toward the distant city; UAM spans most of a pad.
+      const perspective = 0.35 + 0.65 * clamp01((pos.y - 180) / 400);
+      const width = (drone.aircraftType === 'UAM' ? 310 : 65) * tf.scale * perspective;
+      const aspect = ready(sprite) ? sprite.naturalHeight / sprite.naturalWidth : 0.75;
       const height = width * aspect;
 
       ctx.save();
@@ -286,14 +289,12 @@
       // the sprite is a 3/4-angle render, so a small tilt reads as motion
       // without looking like the aircraft flipped onto its side.
       if (drone.state === 'outbound' || drone.state === 'returning') {
-        const dx = drone.pathTo.x - drone.pathFrom.x;
-        const dy = drone.pathTo.y - drone.pathFrom.y;
-        ctx.rotate(Math.atan2(dy, dx) * 0.12);
+        ctx.rotate(drone.velocity.x / 55 * 0.12);
       }
 
       ctx.globalAlpha = docked ? DOCKED_ALPHA : 1;
-      if (ready(droneImage)) {
-        ctx.drawImage(droneImage, -width / 2, -height / 2, width, height);
+      if (ready(sprite)) {
+        ctx.drawImage(sprite, -width / 2, -height / 2, width, height);
       } else {
         drawDroneFallback(width, droneTintColor(drone));
       }
@@ -311,6 +312,12 @@
       }
 
       ctx.restore();
+      if (selected || drone.altitude > 1) {
+        ctx.fillStyle = colors.text;
+        ctx.font = `${Math.max(10, 13 * tf.scale)}px system-ui`;
+        ctx.textAlign = 'center';
+        ctx.fillText(`${drone.callsign} · ${drone.aircraftType} · ${Math.round(drone.altitude)}m`, p.x, p.y + height / 2 + 14);
+      }
     }
 
     function drawFrame(state, selection) {
@@ -343,10 +350,12 @@
 
     function hitTestDrone(state, clientX, clientY) {
       const m = screenToMap(state, clientX, clientY);
-      let best = null, bestD = DRONE_HIT_RADIUS;
+      let best = null, bestD = Infinity;
       state.drones.forEach((d) => {
-        const dist = Math.hypot(d.pos.x - m.x, d.pos.y - m.y);
-        if (dist < bestD) { bestD = dist; best = d; }
+        const dist = Math.hypot(d.pos.x - m.x, d.pos.y - d.altitude - m.y);
+        const perspective = 0.35 + 0.65 * clamp01((d.pos.y - 180) / 400);
+        const radius = (d.aircraftType === 'UAM' ? 140 : 30) * perspective;
+        if (dist < radius && dist < bestD) { bestD = dist; best = d; }
       });
       return best;
     }

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>GroundNode Live — Vahnim</title>
 <link rel="stylesheet" href="style.css" />
-</head>
+<link rel="stylesheet" href="quiet-ui.css"><link rel="stylesheet" href="site-nav.css"></head>
 <body>
 <div class="app">
 
@@ -17,19 +17,13 @@
         <span class="brand-sub">GroundNode Live</span>
       </div>
     </div>
-    <div class="live-badge"><span class="live-dot"></span> Autonomous network — simulated</div>
+    
+    <div class="live-badge"><span class="live-dot"></span> Simulated</div>
   </header>
 
   <div class="controls-bar">
-    <div class="control">
-      <label>Fleet traffic — <span id="droneCountVal">8</span> drones</label>
-      <div class="control-row">
-        <button id="trafficDown" class="stepper" aria-label="Remove drone from fleet">−</button>
-        <input type="range" id="droneCount" min="1" max="20" value="8" step="1" />
-        <button id="trafficUp" class="stepper" aria-label="Add drone to fleet">+</button>
-      </div>
-    </div>
-
+    <div class="control"><label for="uamCount">UAMs — <span id="uamCountVal">3</span></label><input id="uamCount" type="range" min="0" max="12" value="3" step="1" /></div>
+    <div class="control"><label for="uavCount">UAVs — <span id="uavCountVal">5</span></label><input id="uavCount" type="range" min="0" max="20" value="5" step="1" /></div>
     <div class="control">
       <label>Mission demand — <span id="missionDemandVal">Medium</span></label>
       <input type="range" id="missionDemand" min="0" max="1" value="0.5" step="0.01" />
@@ -45,7 +39,7 @@
 
     <div class="control playback">
       <button id="pauseBtn" class="ghost-btn">Pause</button>
-      <button id="resetBtn" class="ghost-btn">Reset</button>
+      <button id="resetBtn" class="ghost-btn">Reset</button><button id="focusBtn" class="ghost-btn" aria-pressed="false">Scene focus</button>
     </div>
   </div>
 
@@ -56,30 +50,32 @@
     </div>
     <div class="metric-tile">
       <span class="metric-value" id="mIntervention">0</span>
-      <span class="metric-label">Human intervention events <small>(trending to zero)</small></span>
+      <span class="metric-label">Separation advisories</span>
     </div>
     <div class="metric-tile">
-      <span class="metric-value" id="mUptime">100%</span>
-      <span class="metric-label">Fleet uptime</span>
+      <span class="metric-value" id="mUptime">0</span>
+      <span class="metric-label">Aircraft airborne</span>
     </div>
     <div class="metric-tile">
-      <span class="metric-value" id="mSaved">$0</span>
-      <span class="metric-label">Est. cost saved vs. manual ops</span>
+      <span class="metric-value" id="mSaved">0</span>
+      <span class="metric-label">Aircraft awaiting a bay</span>
     </div>
   </div>
 
   <div class="main-grid">
     <aside class="comms-panel">
-      <h2>Vertipad Comms</h2>
-      <ul id="commsFeed" class="comms-feed"></ul>
+      <h2>GroundNode / Air link</h2>
+      <select id="commsFilter" aria-label="Communications filter"><option value="all">All channels</option><option value="mission">Missions</option><option value="safety">Separation advisories</option><option value="handoff">City departures / inbound</option><option value="arrival">Arrivals</option><option value="departure">Departures</option><option value="service">Touchdown / service</option><option value="selected">Selected aircraft / pad</option></select><div id="commsSummary" class="comms-summary"></div><ul id="commsFeed" class="comms-feed"></ul>
     </aside>
 
-    <div class="map-wrap">
+      <div class="map-wrap"><div class="scene-note">URBAN AIR MOBILITY / CONCEPT SIMULATION<br><small>1 UAM or 3 UAVs per pad · regional visitors enabled</small></div>
       <canvas id="mapCanvas"></canvas>
       <div id="stationCards" class="station-cards"></div>
+      <div class="camera-tools"><div class="camera-picker"><button id="cameraTrigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="cameraMenu"><span id="cameraLabel">Orbit / overview</span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div id="cameraMenu" role="menu" aria-label="Camera view" hidden><div class="camera-menu-title" role="presentation">Camera perspective</div><button type="button" role="menuitemradio" aria-checked="true" data-view="overview">Orbit / overview</button><button type="button" role="menuitemradio" aria-checked="false" data-view="city">City overview</button><button type="button" role="menuitemradio" aria-checked="false" data-view="follow">Follow aircraft</button><button type="button" role="menuitemradio" aria-checked="false" data-view="pad">Pad approach</button></div><select id="cameraMode" hidden aria-hidden="true" tabindex="-1"><option value="overview">Orbit / overview</option><option value="city">City overview</option><option value="follow">Follow aircraft</option><option value="pad">Pad approach</option></select></div><button id="cameraHome">Reset camera</button><span>Drag to orbit · scroll to zoom</span></div>
     </div>
 
     <aside class="detail-panel" id="detailPanel">
+<div class="fleet-panel"><h2>Flight board</h2><div id="fleetBoard"></div></div>
       <div class="detail-empty" id="detailEmpty">Select a GroundNode station or a drone on the map to see live details.</div>
       <div class="detail-content" id="detailContent" hidden></div>
     </aside>
@@ -88,7 +84,15 @@
 </div>
 
 <script src="sim.js"></script>
-<script src="render.js"></script>
-<script src="main.js"></script>
-</body>
+<script src="city.js"></script>
+<script src="traffic.js"></script>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+<script type="module" src="render3d.js"></script>
+<script src="camera-menu.js"></script><script src="site-nav.js"></script></body>
 </html>
+
+
+
+
+
+

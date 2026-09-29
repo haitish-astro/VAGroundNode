@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pilot · Vahnim Ground-N1</title>
+<meta name="description" content="Pilot screen for the Vahnim Ground-N1 aircraft-to-ground coordination demo.">
+<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="n1-pilot.css"><link rel="stylesheet" href="site-nav.css">
+</head>
+<body class="n1-body pilot">
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<main id="main" class="wrap">
+  <header class="statusbar">
+    <div class="who"><h1>Pilot</h1><span>VH-101 · V6 air taxi</span></div>
+    <div class="phase" id="phaseBox"><small>Phase</small><b id="phase">—</b></div>
+    <div class="progress"><span id="stepText">Step 1</span><div class="track"><i id="stepBar"></i></div></div>
+    <div class="pills"><span class="pill" id="linkPill"><i class="dot" id="linkDot"></i><span id="linkTxt">Connecting…</span></span><span class="pill" id="verifyPill" title="Verified / total datalink messages">✓ 0 / 0</span><span class="mono clock" id="clock">00:00</span></div>
+  </header>
+
+  <div class="grid">
+    <section class="col">
+      <div class="panel pfd-panel" aria-label="Flight display">
+        <canvas id="pfd" role="img" aria-label="Primary flight display"></canvas>
+        <div class="pfd-overlay" id="pfdOverlay" hidden></div>
+      </div>
+      <div class="panel systems" aria-label="Aircraft systems">
+        <div class="sys"><small>Battery</small><b id="sBat">—</b><div class="bar"><i id="sBatBar"></i></div></div>
+        <div class="sys"><small>Power</small><b id="sPow">—</b><div class="bar"><i id="sPowBar"></i></div></div>
+        <div class="sys"><small>Thrust</small><b id="sThr">—</b><div class="bar"><i id="sThrBar"></i></div></div>
+        <div class="sys"><small>Wind</small><b id="sWind">—</b><div class="sub" id="sWindSub"></div></div>
+      </div>
+    </section>
+
+    <section class="col">
+      <div class="panel map-panel">
+        <div class="panel-title"><span>Terminal map</span><span class="seg" role="group" aria-label="Map zoom"><button class="btn mini" data-range="auto" aria-pressed="true">Auto</button><button class="btn mini" data-range="term" aria-pressed="false">Close</button><button class="btn mini" data-range="area" aria-pressed="false">Wide</button></span></div>
+        <canvas id="mfd" role="img" aria-label="Map of the five-pad terminal"></canvas>
+      </div>
+    </section>
+
+    <section class="col">
+      <div class="panel guide" id="guide" aria-live="polite">
+        <div class="guide-head"><span class="pill" id="clState">Ready</span><span class="mono" id="clTimer"></span></div>
+        <h2 id="clTitle">—</h2>
+        <p class="next" id="clNext"></p>
+        <div class="cl-route" id="clRoute"></div>
+        <div class="cl-code" id="clCodeWrap" hidden><span>Read-back code</span><b id="clCode">—</b></div>
+        <div class="cl-bar" id="clBarWrap" hidden><i id="clBar"></i></div>
+        <button class="btn primary big act" id="primary" hidden><span id="primaryLabel"></span><kbd>Enter</kbd></button>
+        <div class="row2">
+          <button class="btn" id="declineBtn" hidden>Decline</button>
+          <button class="btn warn" id="goAroundBtn" hidden>Go around <kbd>G</kbd></button>
+          <button class="btn ghost end" id="endBtn" hidden>End session</button>
+        </div>
+        <p class="notice" id="notice" role="status"></p>
+      </div>
+      <div class="panel msg-panel">
+        <div class="panel-title"><span>Verified datalink</span><span class="dim small" id="msgCount">0 messages</span></div>
+        <div id="msgs" class="msgs"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="modal" id="doneModal" hidden role="dialog" aria-modal="true" aria-labelledby="doneTitle"><div class="glass">
+  <div class="eyebrow">Session complete</div><h2 id="doneTitle">Turnaround complete</h2><div id="doneStats" class="done-stats"></div>
+  <div class="row"><button class="btn primary" id="doneRestart">Restart scenario</button><button class="btn" id="doneClose">Close</button></div>
+</div></div>
+
+<script src="n1-link.js"></script><script src="n1-coach.js"></script><script src="n1-ui.js"></script><script src="n1-map.js"></script><script src="n1-pfd.js"></script><script src="n1-pilot.js"></script><script src="site-nav.js"></script>
+</body></html>

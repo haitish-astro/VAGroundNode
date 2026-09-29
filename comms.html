@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cockpit encounter — guided</title>
+<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="comms.css"><link rel="stylesheet" href="site-nav.css">
+</head>
+<body class="n1-body enc">
+<header class="coach">
+  <div class="coach-top">
+    <div class="coach-title"><span class="eyebrow">Guided cockpit encounter</span><h1>Land an air taxi, step by step</h1></div>
+    <div class="coach-tools">
+      <button class="btn" id="autoplay" aria-pressed="false" title="The pilot presses every step by itself">Watch it fly itself</button>
+      <button class="btn" id="speed" title="Simulation speed">Speed 1×</button>
+      <button class="btn primary" id="restart">Restart</button>
+    </div>
+  </div>
+  <ol class="steps" id="steps" aria-label="Progress"></ol>
+  <div class="coach-cards">
+    <div class="card now"><small>What is happening</small><p id="now">Loading…</p><p class="last" id="last"></p></div>
+    <div class="card next"><small>What to do next</small><p id="next">—</p></div>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="pane view"><iframe id="live" title="3D cockpit view" src="n1-live.html?room=encounter&cam=cockpit&compact=1" allow="fullscreen"></iframe></section>
+  <section class="pane screen">
+    <div class="tabs" role="tablist"><button role="tab" class="btn" id="tabPilot" aria-selected="true">Pilot screen</button><button role="tab" class="btn" id="tabGround" aria-selected="false">Ground team screen</button></div>
+    <iframe id="pilot" title="Pilot screen" src="n1-pilot.html?room=encounter"></iframe>
+    <iframe id="ground" title="Ground team screen" src="n1-ground.html?room=encounter" hidden></iframe>
+  </section>
+</main>
+
+<footer class="trouble">
+  <span class="label">Cause a problem</span>
+  <button class="btn warn" id="pBlock">Block the pad</button>
+  <button class="btn warn" id="pWind">Strong wind</button>
+  <button class="btn warn" id="pLink">Drop the radio link</button>
+  <button class="btn" id="pFake">Send a fake message</button>
+  <button class="btn" id="pSuper" aria-pressed="false">A person approves landings</button>
+  <span class="msg" id="pMsg" role="status"></span>
+  <a class="classic" href="comms-classic.html">Classic version</a>
+</footer>
+<script src="n1-link.js"></script><script src="comms.js"></script><script src="site-nav.js"></script>
+</body></html>

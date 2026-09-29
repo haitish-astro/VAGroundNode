@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Vahnim GroundNode and Ground-N1: User Manual</title>
+<style>
+@page{size:A4;margin:18mm 16mm 18mm}@page :first{margin:0}
+*{box-sizing:border-box}
+body{font:10.5pt/1.5 'Segoe UI',system-ui,sans-serif;color:#17232c;margin:0}
+h1,h2,h3{font-family:'Segoe UI',system-ui,sans-serif;color:#0a2233;line-height:1.2}
+h1{font-size:30pt;margin:0 0 6pt;letter-spacing:-.01em}
+h2{font-size:16pt;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid #1b8f78;break-after:avoid}
+h3{font-size:11.5pt;margin:12pt 0 4pt;color:#136e5d;break-after:avoid}
+p{margin:0 0 7pt}
+.cover{display:flex;flex-direction:column;justify-content:center;background:#050b12;color:#e6f1f5;padding:0 22mm;break-after:page;height:296mm;overflow:hidden}
+.cover h1{color:#fff;font-size:38pt}.cover .eyebrow{color:#5be9c5;letter-spacing:.2em;font-size:10pt;font-weight:700;text-transform:uppercase;margin-bottom:10pt}
+.cover p{color:#b7ccd6;font-size:13pt;max-width:130mm}.cover .meta{margin-top:40pt;color:#8fa9b8;font-size:10pt}
+.page{break-before:page}
+.pilot-shot,.shot{width:100%;border:1px solid #c6d4db;border-radius:6px;margin:6pt 0 4pt;display:block}
+.cap{font-size:9pt;color:#5a7280;margin-bottom:8pt}
+table{border-collapse:collapse;width:100%;margin:6pt 0 10pt;font-size:9.5pt;break-inside:avoid}
+th,td{border:1px solid #c6d4db;padding:4pt 7pt;text-align:left;vertical-align:top}th{background:#e8f3f0;color:#0a2233}
+ol,ul{margin:0 0 8pt 16pt;padding:0}li{margin-bottom:3pt}
+kbd{font:9pt Consolas,monospace;border:1px solid #9db2bd;border-bottom-width:2px;border-radius:3px;padding:0 4px;background:#f3f7f9}
+code{font:9.5pt Consolas,monospace;background:#eef3f5;padding:0 3px;border-radius:3px}
+.note{border-left:4px solid #ffb454;background:#fff6e8;padding:6pt 10pt;margin:8pt 0;font-size:9.5pt;break-inside:avoid}
+.tip{border-left:4px solid #1b8f78;background:#eaf6f2;padding:6pt 10pt;margin:8pt 0;font-size:9.5pt;break-inside:avoid}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10pt}
+.toc li{margin-bottom:5pt;font-size:11pt}
+.foot{font-size:8.5pt;color:#5a7280;margin-top:14pt}
+</style></head><body>
+
+<section class="cover">
+  <div class="eyebrow">Vahnim · GroundNode</div>
+  <h1>Simulation<br>User Manual</h1>
+  <p>How to run and present the city simulation and the Ground-N1 aircraft-to-ground demo: three windows, one shared simulation, five pads.</p>
+  <div class="meta">Covers: City simulation (home) · Ground-N1 launcher, pilot screen, ground control, live 3D window · Model hangar · Smart pad · Cockpit encounter · Integration lab</div>
+</section>
+
+<section>
+<h2>1. What this is</h2>
+<p>The project simulates an urban air mobility terminal with <b>five landing pads (GN-01 to GN-05)</b>. It has two parts you can use on their own or together:</p>
+<ul>
+<li><b>City simulation (home page).</b> A fleet of UAMs (passenger aircraft) and UAVs (small drones) flies out from the pads, hovers over a city site, returns, lands, charges and redeploys. Use it to show fleet scale and traffic separation.</li>
+<li><b>Ground-N1 demo.</b> One UAM talks to the ground node. The pilot uses a cockpit screen, the ground-control team uses an operations screen, and a live 3D window shows the pad and the aircraft. Every instruction is a signed, verified datalink message and the ground automation explains its decisions.</li>
+</ul>
+<h3>Contents</h3>
+<ol class="toc"><li>What this is</li><li>Getting started</li><li>Navigating between pages</li><li>City simulation (home)</li><li>Ground-N1 demo: launcher and windows</li><li>Ground-N1 walkthrough (step by step)</li><li>Scenarios, supervision and tests</li><li>Other pages</li><li>Troubleshooting and limits</li></ol>
+</section>
+
+<section class="page">
+<h2>2. Getting started</h2>
+<ol>
+<li>Install <b>Node.js</b> (any recent version) and open a terminal in the project folder.</li>
+<li>Run <code>npm install</code> once. This downloads the pinned 3D library (three.js).</li>
+<li>Run <code>npm start</code>. It serves the project at <code>http://localhost:8123</code>.</li>
+<li>Open <code>http://localhost:8123</code> in <b>Chrome or Edge</b>. The home page is the city simulation.</li>
+</ol>
+<div class="tip"><b>Check it works:</b> run <code>npm test</code>. All suites should print PASS lines (city fleet, protocol, coordination, encounter and Ground-N1).</div>
+<h3>Requirements</h3>
+<ul><li>A desktop browser with WebGL (Chrome, Edge, Firefox). The three Ground-N1 windows must be in the <b>same browser</b> so they can share one simulation.</li>
+<li>For the two-screen demo use a display of at least 1280 × 720 per window. A second monitor is ideal for the live window.</li></ul>
+<h3>Page map</h3>
+<table><tr><th>Page</th><th>File</th><th>Purpose</th></tr>
+<tr><td>City simulation (home)</td><td>index.html</td><td>Whole fleet, five pads, city missions</td></tr>
+<tr><td>Ground-N1 launcher</td><td>n1.html</td><td>Choose scenario, mode and speed; open the windows</td></tr>
+<tr><td>Pilot</td><td>n1-pilot.html</td><td>Aircraft cockpit software</td></tr>
+<tr><td>Ground control</td><td>n1-ground.html</td><td>Operations screen for the ground team</td></tr>
+<tr><td>Live 3D</td><td>n1-live.html</td><td>3D view of the terminal and aircraft</td></tr>
+<tr><td>Demo wall</td><td>n1-wall.html</td><td>All three screens tiled on one display</td></tr>
+<tr><td>Explore overview</td><td>explore.html</td><td>Plain-language menu of the pages below, with a glossary</td></tr>
+<tr><td>Cockpit encounter</td><td>comms.html</td><td>Guided practice landing with a coach (private simulation)</td></tr>
+<tr><td>Aircraft models</td><td>hangar.html</td><td>Turntable viewer with hover, cruise and parked modes and key facts</td></tr>
+<tr><td>Smart pad</td><td>smart-pad.html</td><td>Interactive pad concept</td></tr>
+<tr><td>Integration lab</td><td>coordination-lab.html</td><td>Detailed review and failure exercises</td></tr></table>
+</section>
+
+<section>
+<h2>3. Navigating between pages</h2>
+<p>Every page has the same bar across the top. The <b>orange ← Home</b> button (left) returns to the city simulation from any page. The other tabs are grouped as <b>Ground-N1</b> (Launcher, Pilot, Ground control, Live 3D, Demo wall) and <b>Explore</b> (Overview, Cockpit encounter, Aircraft models, Smart pad, Integration lab). The current page is highlighted. On narrow windows the bar scrolls sideways.</p>
+<p>At the right end of the bar, the pulsing <b>ⓘ In simple words</b> button opens a short plain-language explanation of the page you are on. Click <i>Got it</i> to close it; the button stops pulsing once you have used it.</p>
+<div class="note">Clicking a tab replaces the current window. During a Ground-N1 demo keep the Pilot, Ground and Live windows open; the simulation keeps running while at least one of them is open, and restarts if you close all of them.</div>
+</section>
+
+<section class="page">
+<h2>4. City simulation (home)</h2>
+<img class="shot" src="img/city.jpg" alt="City simulation"><div class="cap">Figure 1. City simulation: controls (top), 3D scene with the five pads, flight board and communications.</div>
+<h3>What you see</h3>
+<p>Aircraft depart a pad vertically, climb, fly to a city site, <b>hover still</b> for the mission, then return, wait for a free bay, land, charge (or swap the battery) and redeploy. Each UAM takes a whole pad. Each pad holds up to three UAVs, never mixed with a UAM.</p>
+<h3>Controls</h3>
+<table><tr><th>Control</th><th>What it does</th></tr>
+<tr><td>UAMs slider (0 to 12)</td><td>Number of passenger aircraft in the home fleet. Added aircraft enter from outside the city; removed ones retire after they land and finish service.</td></tr>
+<tr><td>UAVs slider (0 to 20)</td><td>Number of drones in the home fleet.</td></tr>
+<tr><td>Mission demand</td><td>How often idle aircraft are dispatched. Higher demand means busier pads and queues.</td></tr>
+<tr><td>Turnaround mode</td><td><i>Charge in place</i> (longer dwell) or <i>Battery swap</i> (short dwell).</td></tr>
+<tr><td>Pause / Reset</td><td>Freeze the simulation (camera still works) or restart it.</td></tr>
+<tr><td>Scene focus</td><td>Hides the panels so only the 3D scene shows.</td></tr>
+<tr><td>Camera menu</td><td><i>Orbit / overview</i>, <i>City overview</i>, <i>Follow aircraft</i> (tracks the selected aircraft), <i>Pad approach</i> (close on the selected pad). Drag to orbit, scroll to zoom, <i>Reset camera</i> to go home.</td></tr>
+<tr><td>Flight board</td><td>Click an aircraft to select it and see mission, battery, altitude and traffic status.</td></tr>
+<tr><td>Communications filter</td><td>Show all channels, missions, separation advisories, city handoffs, arrivals, departures, service, or only the selected aircraft or pad.</td></tr></table>
+<div class="tip">The four counters show missions completed, separation advisories, aircraft airborne and aircraft waiting for a bay. Watch "waiting for a bay" rise when you raise demand with few pads free.</div>
+</section>
+
+<section class="page">
+<h2>5. Ground-N1 demo: launcher and windows</h2>
+<img class="shot" src="img/launcher.jpg" alt="Ground-N1 launcher"><div class="cap">Figure 2. Launcher (Ground-N1 › Launcher). Demo control panel on the right.</div>
+<h3>Starting the demo</h3>
+<ol><li>Open <b>Ground-N1 › Launcher</b>.</li>
+<li>Pick a <b>Scenario</b>, a <b>Supervision</b> mode and a <b>Speed</b> (½×, 1×, 2×, 4×).</li>
+<li>Click <b>Start demo · open 3 windows</b> (allow pop-ups). Live fills the screen; Pilot and Ground share the screen or go to a second display. Or click <b>Demo wall</b> to see all three on one display.</li></ol>
+<p>The panel shows the aircraft phase, simulated time, verified message count and how many windows are connected. <b>Restart scenario</b> resets everything; <b>Pause</b> freezes flight and timers; <b>Autoplay</b> lets the pilot press every recommended step by itself.</p>
+<h3>The three windows</h3>
+<table><tr><th>Window</th><th>Who</th><th>Main elements</th></tr>
+<tr><td><b>Pilot</b></td><td>UAM pilot</td><td>Flight display (attitude, speed, altitude, vertical speed, heading), moving map, mission progress bar, clearance card with read-back code, action buttons, verified datalink log.</td></tr>
+<tr><td><b>Ground control</b></td><td>Ground team</td><td>Terminal radar, traffic strip, five pad cards with controls, weather sliders, supervision toggle, approval card, intervention and test buttons, datalink log, automation decision log.</td></tr>
+<tr><td><b>Live 3D</b></td><td>Everyone</td><td>The five-pad terminal and the aircraft. Director camera, captions for key events, telemetry, message ticker.</td></tr></table>
+</section>
+
+<section>
+<h3>Pilot screen</h3>
+<img class="shot" src="img/pilot.jpg" alt="Pilot screen"><div class="cap">Figure 3. Pilot screen after a clearance is confirmed. The highlighted button is the next step.</div>
+<table><tr><th>Button</th><th>Use</th></tr>
+<tr><td>Connect to GN-N1</td><td>Open a verified session; the node checks the aircraft against its registry.</td></tr>
+<tr><td>Request landing / Request departure</td><td>Ask the ground node. It answers automatically.</td></tr>
+<tr><td>Accept · read back / Decline</td><td>Answer a clearance offer. Accepting sends the code back for the node to verify. Offers expire after 30 s.</td></tr>
+<tr><td>Engage approach / Engage departure</td><td>Starts the guidance. Accepting alone never moves the aircraft.</td></tr>
+<tr><td>Go around</td><td>Abort the approach: climb and hold.</td></tr>
+<tr><td>Propulsion safe</td><td>After landing and rotor stop; starts ground power and charging.</td></tr>
+<tr><td>End session</td><td>Closes the datalink session.</td></tr></table>
+<p>Keyboard: <kbd>Enter</kbd> presses the highlighted next step, <kbd>G</kbd> commands a go-around. The map has <b>Auto / Terminal / Area</b> range buttons.</p>
+</section>
+
+<section class="page">
+<h3>Ground control screen</h3>
+<img class="shot" src="img/ground.jpg" alt="Ground control screen"><div class="cap">Figure 4. Ground control during an approach to GN-01: radar, five pads, weather and both logs.</div>
+<table><tr><th>Element</th><th>Use</th></tr>
+<tr><td>Supervision (top)</td><td><b>Automatic</b>: the node offers clearances at once. <b>Supervised</b>: each recommendation waits for an operator.</td></tr>
+<tr><td>Approval card</td><td>Appears in Supervised mode. Approve the recommended pad, pick another free pad, or Deny to hold.</td></tr>
+<tr><td>Pad cards</td><td><i>Report obstruction</i> (debris on a pad) and <i>Close pad</i> (maintenance). Both remove the pad from use; an active approach to it is revoked and diverted.</td></tr>
+<tr><td>Weather</td><td>Wind speed, gust intensity and direction. When the peak wind passes the limit (14 m/s) requests are held.</td></tr>
+<tr><td>Interventions</td><td>Issue hold, order go-around, revoke clearance. They override automation and are logged.</td></tr>
+<tr><td>Verification tests</td><td>Send forged message, replay last message, drop the datalink for 10 s.</td></tr>
+<tr><td>Automation decisions</td><td>Plain-language reasons: why a pad was chosen or rejected, holds and diverts.</td></tr></table>
+<h3>Live 3D window</h3>
+<img class="shot" src="img/live.jpg" alt="Live window"><div class="cap">Figure 5. Live window on short final: the beam marks the assigned pad, labels show pad status.</div>
+<p>Pad rings and labels follow status: <b>green</b> free, <b>cyan</b> reserved, <b>amber</b> occupied, <b>red</b> obstructed, <b>grey</b> closed. Cameras: <kbd>1</kbd> Director (automatic shots), <kbd>2</kbd> Chase, <kbd>3</kbd> Pad cam, <kbd>4</kbd> Tower, <kbd>5</kbd> Orbit (drag and scroll), <kbd>6</kbd> Cockpit seat (first-person from the windshield). <kbd>H</kbd> hides the panels and the top bar for a clean feed, <kbd>F</kbd> toggles fullscreen.</p>
+</section>
+
+<section class="page">
+<h2>6. Ground-N1 walkthrough (step by step)</h2>
+<p>Use the <b>Nominal arrival</b> scenario at 1×. A full run takes about two and a half minutes. Progress shows in the bar under the pilot header.</p>
+<table><tr><th>#</th><th>Who</th><th>Action</th><th>What happens</th></tr>
+<tr><td>1</td><td>Pilot</td><td>Connect</td><td>Signed HELLO; the node verifies the identity and replies with the session.</td></tr>
+<tr><td>2</td><td>Pilot</td><td>Request landing</td><td>The automation checks all five pads, wind and battery. Occupied pads are rejected with the reason; it picks the nearest free pad.</td></tr>
+<tr><td>3</td><td>Pilot</td><td>Accept · read back</td><td>The read-back code is verified; the pad is locked and shows as reserved.</td></tr>
+<tr><td>4</td><td>Pilot</td><td>Engage approach</td><td>The aircraft flies the route, aligns over the pad and descends. Watch the live window.</td></tr>
+<tr><td>5</td><td>Automatic</td><td>Touchdown</td><td>The touchdown report and sink rate are verified. Rotors spool down.</td></tr>
+<tr><td>6</td><td>Pilot</td><td>Propulsion safe</td><td>Charging starts (time-compressed for the demo).</td></tr>
+<tr><td>7</td><td>Pilot</td><td>Request departure</td><td>Offered once battery and weather allow; accept, then <b>Engage departure</b>.</td></tr>
+<tr><td>8</td><td>Automatic</td><td>Climb-out</td><td>The pad is released when the aircraft is clear; the session closes.</td></tr></table>
+<h3>Reading a message</h3>
+<p>Each datalink entry shows kind, time, direction and text, plus chips: <b>TX</b> sent, <b>RX</b> delivered, <b>✓ SIG</b> signature verified, <b>✓ ACK</b> acknowledged. A rejected message is red with the reason.</p>
+<div class="note">Signing in the demo uses a keyed hash to show verification. It is not real cryptography.</div>
+</section>
+
+<section>
+<h2>7. Scenarios, supervision and tests</h2>
+<table><tr><th>Scenario</th><th>What to show</th></tr>
+<tr><td>Nominal arrival</td><td>The full happy path.</td></tr>
+<tr><td>Gusty wind hold</td><td>The request is held for wind. On the ground screen lower the wind slider; the automation reassesses and offers a clearance by itself.</td></tr>
+<tr><td>Pad incursion drill</td><td>Debris appears on the assigned pad on short final: clearance revoked, go-around, divert offer to another pad.</td></tr>
+<tr><td>Low battery priority</td><td>Battery below reserve: the request is flagged priority and skips supervisor approval.</td></tr>
+<tr><td>Link-loss drill</td><td>The datalink drops on approach: the aircraft goes around and holds. When the link returns, Connect again and re-request.</td></tr></table>
+<h3>Things to try during any run</h3>
+<ul><li>Switch to <b>Supervised</b> and approve a different pad than the one recommended.</li>
+<li>On the ground screen, <b>Report obstruction</b> on the assigned pad mid-approach.</li>
+<li>Click <b>Send forged message</b> and <b>Replay last message</b>: both are rejected and nothing changes.</li>
+<li>Set the wind above the limit on final: the node orders a go-around.</li></ul>
+<h3>Tips for presenting</h3>
+<ul><li>Use <b>Autoplay</b> with the Demo wall for a hands-free loop; use 2× or 4× to shorten waits.</li>
+<li>Put the Live window on the big screen and press <kbd>H</kbd> for a clean feed.</li></ul>
+</section>
+
+<section class="page">
+<h2>8. Other pages</h2>
+<h3>Explore overview</h3>
+<p>A menu that explains each page in plain words (what it is, what to try, who it is for) plus a short glossary of terms such as UAM, clearance and go-around.</p>
+<h3>Cockpit encounter (guided)</h3>
+<p>The easiest way to understand the whole system. It runs its own private simulation, so it never disturbs a Ground-N1 demo running in other windows.</p>
+<ul><li><b>Coach (top):</b> a progress strip, <i>What is happening</i> in simple words, and <i>What to do next</i>. Below it, the last decision made by the ground computer.</li>
+<li><b>Left:</b> a 3D view from the cockpit seat. Use the camera buttons (or keys 1 to 6) to switch to chase, pad, tower or orbit views.</li>
+<li><b>Right:</b> the Pilot screen, or the Ground team screen using the tabs. It is the same software as the Ground-N1 windows.</li>
+<li><b>Cause a problem (bottom):</b> <i>Block the pad</i>, <i>Strong wind</i>, <i>Drop the radio link</i>, <i>Send a fake message</i>, and <i>A person approves landings</i> (supervised mode). Press again to undo. The coach explains what the system does about each.</li>
+<li><b>Top right:</b> <i>Watch it fly itself</i> (autoplay), <i>Speed</i> (1×, 2×, 4×) and <i>Restart</i>. The earlier version is still available through the <i>Classic version</i> link.</li></ul>
+<h3>Aircraft models</h3>
+<p>Turntable view of the Vahnim V6 air taxi (UAM) and S4 drone (UAV) with plain-language key facts. Choose <b>Hover</b> (rotors lifting), <b>Cruise</b> (the air taxi's wing carries it and its lift rotors stop; the drone tilts forward) or <b>Parked</b>. Drag to look around; scroll to zoom.</p>
+<h3>Smart pad</h3>
+<p>Interactive 3D pad concept. Click a part or the system list to highlight it; use Top view, Reset, auto-rotate and the exploded view.</p>
+<h3>Integration lab</h3>
+<p>Detailed exercise for equipped and visitor aircraft with operator review and failure cases (expiry, conflicts, link loss). It can also mirror city telemetry from another tab.</p>
+</section>
+
+<section>
+<h2>9. Troubleshooting and limits</h2>
+<table><tr><th>Problem</th><th>Fix</th></tr>
+<tr><td>Page will not load</td><td>Check <code>npm start</code> is running and use <code>http://localhost:8123</code>.</td></tr>
+<tr><td>Windows do not open</td><td>Allow pop-ups for the site, or open the pages from the tabs, or use the Demo wall.</td></tr>
+<tr><td>Screens show different states</td><td>Windows must be in the same browser profile. Add <code>?local=1</code> to a page only if you want a private, unsynced copy.</td></tr>
+<tr><td>Everything restarted</td><td>Closing every Ground-N1 window ends the shared simulation. Keep at least one open.</td></tr>
+<tr><td>3D scene is blank</td><td>The browser needs WebGL. Try Chrome or Edge with hardware acceleration on.</td></tr>
+<tr><td>Buttons are greyed out</td><td>Actions only enable when valid. Follow the highlighted step, or read the hint under "Next step".</td></tr></table>
+<div class="note"><b>Limits.</b> This is a simulation for demonstration. Flight dynamics are illustrative, not validated aerodynamics. Only one aircraft is simulated in Ground-N1; other pads show parked aircraft. Charging is time-compressed. The pilot screen is a software concept, not a certified flight instrument. Registry, read-back and message signing are demonstrations. No aviation regulatory compliance is claimed.</div>
+<p class="foot">Tuning notes for developers (pad positions, limits, scenarios, aircraft specifications, colours) are in the project README under "Tuning cheat-sheet".</p>
+</section>
+</body></html>

@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');require('./protocol.js');
+const p=globalThis.GroundNodeProtocol,s=p.create();
+p.send(s,'touchdown');assert.equal(s.phase,'offline');assert.equal(s.log.at(-1).type,'REJECT');
+for(const c of ['discover','register','obstacle','request'])p.send(s,c);
+assert.equal(s.phase,'holding');p.send(s,'touchdown');assert.equal(s.phase,'holding');
+p.send(s,'obstacle');p.send(s,'request');assert.equal(s.phase,'cleared');
+p.send(s,'obstacle');assert.equal(s.phase,'holding');
+p.send(s,'obstacle');p.send(s,'request');p.send(s,'disconnect');assert.equal(s.phase,'offline');
+p.send(s,'touchdown');assert.equal(s.log.at(-1).type,'REJECT');
+for(const c of ['discover','register','request','touchdown','service'])p.send(s,c);
+assert.equal(s.phase,'servicing');
+for(let i=0;i<80;i++)p.send(s,'request');assert.equal(s.log.length,60);
+console.log('PASS: protocol sequencing, obstruction, clearance revocation, lost-link invalidation and bounded history.');

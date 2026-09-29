@@ -1,0 +1,91 @@
+/* Restrained control polish over the original dark Vahnim interface. */
+button, select, nav a, .showcase-nav a {
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+button, select {
+  border-radius: 10px;
+  border: 1px solid #ffffff18;
+  background: #202d38;
+  color: #e4edf1;
+  box-shadow: inset 0 1px 0 #ffffff05;
+}
+button:not(:disabled):hover { background: #2a3945; border-color: #ffffff30; }
+button:not(:disabled):active { background: #182630; }
+button:disabled { opacity: .4; cursor: not-allowed; }
+button:focus-visible, select:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 2px solid #79bfcf;
+  outline-offset: 3px;
+}
+nav, .showcase-nav {
+  gap: 3px;
+  padding: 4px;
+  background: #ffffff04;
+  border: 1px solid #ffffff08;
+  border-radius: 13px;
+}
+nav a, .showcase-nav a {
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #9cafba;
+  text-decoration: none;
+}
+nav a[aria-current], .showcase-nav a[aria-current] {
+  background: #25333f;
+  border-color: #ffffff0d;
+  color: #edf3f5;
+  box-shadow: 0 2px 5px #00000015;
+}
+nav a:hover, .showcase-nav a:hover { background: #ffffff08; color: #edf3f5; }
+.toggle { padding: 3px; border: 1px solid #ffffff0b; border-radius: 11px; background: #0d151d; }
+.toggle-btn { border: 0; border-radius: 8px; background: transparent; color: #9aadb8; box-shadow: none; }
+.toggle-btn.active { background: #2a3540; color: #ffbb8d; box-shadow: 0 1px 4px #00000020; }
+.ghost-btn, .detail-close { border: 1px solid #ffffff14; border-radius: 9px; background: #1b2731; color: #c4d2d9; }
+.ghost-btn:hover, .detail-close:hover { color: #f0f5f7; background: #26343f; }
+#commsFilter, .camera-tools select, .camera-tools button { border: 1px solid #ffffff20; border-radius: 10px; background: #1b2a35ed; color: #e3edf1; padding: 9px; }
+.flight-row { border-radius: 10px; border-color: #ffffff06; }
+.flight-row:hover, .flight-row.selected { background: #25323b; border-color: #a7785559; }
+.system-list button { border-radius: 12px; padding: 13px 15px; background: #1d2b36; border-color: #ffffff0d; }
+.system-list button[aria-pressed=true] { background: #302b27; border-color: #b7825f80; color: #ffc197; }
+.viewer-controls button, .viewer-controls select { border-radius: 9px; }
+.viewer-controls button[aria-pressed=true], .ghost-btn[aria-pressed=true] { background: #2e3e48; border-color: #86b3c050; }
+.primary { background: #e99a66; color: #21180f; border-color: #ffc79d40; }
+.primary:not(:disabled):hover { background: #f1ad7e; border-color: #ffd5b480; }
+@media(prefers-reduced-motion:reduce) {
+  button, select, nav a, .showcase-nav a { transition: none; }
+}
+/* Floating glass camera controls, including the open menu rather than OS options. */
+.camera-tools{gap:8px;align-items:center;z-index:4}
+.camera-picker{position:relative}
+.camera-tools #cameraMode[hidden],#cameraMenu[hidden]{display:none!important}
+.camera-tools #cameraTrigger,.camera-tools #cameraHome,.camera-tools>span{
+  background:linear-gradient(155deg,#ffffff25,#ffffff08),#1627339c;
+  backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);
+  border:1px solid #ffffff36;border-radius:14px;color:#eef5f8;
+  box-shadow:inset 0 1px 0 #ffffff20,0 5px 16px #08172225;
+  padding:11px 14px;font-size:11px;line-height:16px;
+}
+.camera-tools #cameraTrigger{display:flex;gap:16px;align-items:center;justify-content:space-between;min-width:160px}
+.camera-tools #cameraTrigger span{background:none;padding:0;border:0;box-shadow:none;color:inherit;font:inherit}
+.camera-tools #cameraTrigger svg{opacity:.7;transition:transform .18s}
+.camera-tools #cameraTrigger[aria-expanded=true] svg{transform:rotate(180deg)}
+.camera-tools #cameraTrigger:hover,.camera-tools #cameraHome:hover{background:linear-gradient(155deg,#ffffff35,#ffffff12),#223b4bb3;border-color:#ffffff60}
+.camera-tools #cameraTrigger[aria-expanded=true]{border-color:#b6dfed88;box-shadow:inset 0 1px 0 #ffffff25,0 0 0 3px #a8dbed12}
+.camera-tools>span{font-size:10px;color:#c1d0d9;background:#1c303d79;border-color:#ffffff18;box-shadow:inset 0 1px 0 #ffffff09}
+#cameraMenu{position:absolute;left:0;bottom:calc(100% + 10px);width:220px;padding:7px;border-radius:18px;
+  background:linear-gradient(145deg,#ffffff21,#ffffff06),#132733d9;
+  backdrop-filter:blur(28px) saturate(150%);-webkit-backdrop-filter:blur(28px) saturate(150%);
+  border:1px solid #ffffff36;box-shadow:inset 0 1px 0 #ffffff20,0 16px 40px #07131d45;
+  animation:glass-menu-in .16s ease-out;transform-origin:bottom left;
+}
+.camera-menu-title{padding:7px 10px 9px;color:#b4c7d1;font-size:9px;letter-spacing:1px;text-transform:uppercase}
+#cameraMenu button{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:11px 12px;border:1px solid transparent;border-radius:11px;background:transparent;color:#deebf2;box-shadow:none;font-size:12px;line-height:16px;margin:2px 0}
+#cameraMenu button::after{content:'✓';visibility:hidden;color:#c4ecf8;font-size:13px}
+#cameraMenu button[aria-checked=true]{background:#bbddeb20;border-color:#c0e4f31e;color:#fff}
+#cameraMenu button[aria-checked=true]::after{visibility:visible}
+#cameraMenu button:hover,#cameraMenu button:focus-visible{background:#c7e4ef29;border-color:#d1eaf933;outline:none}
+@keyframes glass-menu-in{from{opacity:0;transform:translateY(5px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){#cameraMenu{animation:none}.camera-tools #cameraTrigger svg{transition:none}}
+@media(max-width:600px){.camera-tools>span{display:none}}
