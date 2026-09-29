@@ -42,7 +42,7 @@ const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;cont
 scene.add(new THREE.HemisphereLight('#e7f5ff','#56706b',1.1));
 const sun=new THREE.DirectionalLight('#fff0d7',2.6);sun.position.set(-18,28,14);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-16,right:16,top:16,bottom:-16,near:1,far:90});scene.add(sun);
 const floor=new THREE.Mesh(new THREE.CircleGeometry(60,64),new THREE.MeshStandardMaterial({color:'#5d7079',roughness:.85}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
-const ring=new THREE.Mesh(new THREE.RingGeometry(11.6,12,64),new THREE.MeshBasicMaterial({color:'#5be9c5'}));ring.rotation.x=-Math.PI/2;ring.position.y=.02;scene.add(ring);
+const ring=new THREE.Mesh(new THREE.RingGeometry(11.6,12,64),new THREE.MeshBasicMaterial({color:'#e07a3c'}));ring.rotation.x=-Math.PI/2;ring.position.y=.02;scene.add(ring);
 
 // Plain-language facts (illustrative demo values, matching flight-dynamics.js)
 const INFO={

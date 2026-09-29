@@ -3,21 +3,18 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GroundNode Live — Vahnim</title>
+<title>City simulation · Vahnim</title>
+<meta name="description" content="Vahnim GroundNode city simulation: a live five-pad terminal with air taxis and drones flying missions." />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="quiet-ui.css"><link rel="stylesheet" href="site-nav.css"></head>
 <body>
 <div class="app">
 
   <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark">GN</span>
-      <div class="brand-text">
-        <span class="brand-name">VAHNIM</span>
-        <span class="brand-sub">GroundNode Live</span>
-      </div>
+    <div class="page-head">
+      <h1 class="page-title">City simulation</h1>
+      <span class="brand-sub">Five landing pads · air taxis and drones flying out, hovering, returning and charging</span>
     </div>
-    
     <div class="live-badge"><span class="live-dot"></span> Simulated</div>
   </header>
 
@@ -86,6 +83,7 @@
 <script src="sim.js"></script>
 <script src="city.js"></script>
 <script src="traffic.js"></script>
+<script>(function(){try{var c=document.createElement('canvas');if(c.getContext('webgl2')||c.getContext('webgl'))return;}catch(e){}window.__noWebGL=true;document.addEventListener('DOMContentLoaded',function(){var m=document.querySelector('.map-wrap');if(m){var p=document.createElement('p');p.className='webgl-note';p.textContent='The 3D city needs WebGL, which is not available in this browser. Try Chrome or Edge with hardware acceleration switched on.';m.append(p);}});})();</script>
 <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
 <script type="module" src="render3d.js"></script>
 <script src="camera-menu.js"></script><script src="site-nav.js"></script></body>

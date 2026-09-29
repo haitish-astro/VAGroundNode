@@ -3,7 +3,8 @@
 (function () {
   'use strict';
   const root = document.documentElement;
-  if (window.top !== window) { root.classList.add('embed'); return; }
+  // Framed pages (guided encounter, demo wall) and film mode get no header.
+  if (window.top !== window || /[?&]film=1/.test(location.search)) { root.classList.add('embed'); return; }
   const HOME = 'index.html';
   const SECTIONS = [
     { id: 'home', label: 'Home', href: HOME, pages: [HOME] },
@@ -30,18 +31,18 @@
 
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
   const header = el('header'); header.id = 'site-header';
-  const main = el('div', 'row main');
-  const logo = el('a', 'logo'); logo.href = HOME; logo.setAttribute('aria-label', 'Vahnim, home'); logo.append(el('span', 'logo-img'));
-  const nav = el('nav', 'primary'); nav.setAttribute('aria-label', 'Sections');
+  const main = el('div', 'vh-row vh-main');
+  const logo = el('a', 'vh-logo'); logo.href = HOME; logo.setAttribute('aria-label', 'Vahnim, home'); logo.append(el('span', 'vh-logo-img'));
+  const nav = el('div', 'vh-primary'); nav.setAttribute('role', 'navigation'); nav.setAttribute('aria-label', 'Sections');
   for (const s of SECTIONS) { const a = el('a', '', s.label); a.href = s.href; if (s.id === section.id) a.setAttribute('aria-current', 'true'); nav.append(a); }
   const guide = el('a', '', 'Guide ↗'); guide.href = GUIDE; guide.target = '_blank'; guide.rel = 'noopener'; guide.title = 'Open the user manual (PDF)'; nav.append(guide);
   main.append(logo, nav);
-  const spacer = el('span', 'spacer'); main.append(spacer);
+  const spacer = el('span', 'vh-spacer'); main.append(spacer);
   header.append(main);
 
   let navh = 56;
   if (section.pages.length > 1) {
-    const sub = el('nav', 'row sub'); sub.setAttribute('aria-label', section.label);
+    const sub = el('div', 'vh-row vh-sub'); sub.setAttribute('role', 'navigation'); sub.setAttribute('aria-label', section.label);
     for (const [href, label] of section.pages) { const a = el('a', '', label); a.href = href; if (href === here) a.setAttribute('aria-current', 'page'); sub.append(a); }
     header.append(sub); navh = 92;
   }
@@ -49,21 +50,21 @@
 
   const text = EXPLAIN[here];
   if (text) {
-    const help = el('button', 'help', 'Help'); help.type = 'button'; help.setAttribute('aria-expanded', 'false'); help.setAttribute('aria-controls', 'site-explain'); main.append(help);
+    const help = el('button', 'vh-help', 'Help'); help.type = 'button'; help.setAttribute('aria-expanded', 'false'); help.setAttribute('aria-controls', 'site-explain'); main.append(help);
     const card = el('div'); card.id = 'site-explain'; card.hidden = true; card.setAttribute('role', 'note');
     const p = el('p', '', text), close = el('button', '', 'Got it'); close.type = 'button'; card.append(el('b', '', 'In simple words'), p, close);
     const key = 'vahnim-help-' + here; let seen = false;
     try { seen = !!localStorage.getItem(key); } catch (e) { /* storage may be blocked */ }
-    const set = open => { card.hidden = !open; help.setAttribute('aria-expanded', String(open)); help.classList.remove('pulse'); if (!open) { try { localStorage.setItem(key, '1'); } catch (e) { /* ignore */ } } };
+    const set = open => { card.hidden = !open; help.setAttribute('aria-expanded', String(open)); help.classList.remove('vh-pulse'); if (!open) { try { localStorage.setItem(key, '1'); } catch (e) { /* ignore */ } } };
     help.onclick = () => set(card.hidden); close.onclick = () => set(false);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !card.hidden) set(false); });
-    if (!seen) help.classList.add('pulse');
+    if (!seen) help.classList.add('vh-pulse');
     document.body.append(card);
   }
 
   document.body.classList.add('has-site-nav');
   document.body.prepend(header);
-  const skip = el('a', 'skip', 'Skip to content'); skip.href = '#main'; document.body.prepend(skip);
+  const skip = el('a', 'vh-skip', 'Skip to content'); skip.href = '#main'; document.body.prepend(skip);
   if (!document.getElementById('main')) { const m = document.querySelector('main') || document.body.children[2]; if (m && !m.id) m.id = 'main'; }
   // Favicon and theme colour for every page.
   if (!document.querySelector('link[rel~="icon"]')) { const l = el('link'); l.rel = 'icon'; l.type = 'image/svg+xml'; l.href = 'assets/favicon.svg'; document.head.append(l); }

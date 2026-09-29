@@ -1,95 +1,83 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ground-N1 Control — GN Terminal</title>
-<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="n1-ground.css">
-<link rel="stylesheet" href="site-nav.css"></head>
+<title>Ground control · Vahnim Ground-N1</title>
+<meta name="description" content="Ground control screen for the Vahnim Ground-N1 aircraft-to-ground coordination demo.">
+<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="n1-ground.css"><link rel="stylesheet" href="site-nav.css">
+</head>
 <body class="n1-body ground">
-<header class="ops-top">
-  <div class="brand"><span class="brand-mark">GN</span><div><b>GROUND-N1</b><small>Vertiport control · GN terminal · 5 pads</small></div></div>
-  <div class="mode" role="group" aria-label="Supervision mode"><small>SUPERVISION</small><span class="seg"><button class="btn mini" data-mode="auto" aria-pressed="true">Automatic</button><button class="btn mini" data-mode="supervised" aria-pressed="false">Supervised</button></span></div>
-  <div class="top-status">
-    <span class="pill" id="linkPill"><i class="dot" id="linkDot"></i><span id="linkTxt">Connecting…</span></span>
-    <span class="pill info" id="sessionPill">No session</span>
-    <span class="pill" id="verifyPill">✓ 0 / 0</span>
-    <span class="mono clock" id="clock">00:00</span>
-    
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<main id="main" class="wrap">
+  <header class="statusbar">
+    <div class="who"><h1>Ground control</h1><span>GN terminal · 5 pads</span></div>
+    <div class="mode" role="group" aria-label="Who approves landings"><small>Approvals</small><span class="seg"><button class="btn mini" data-mode="auto" aria-pressed="true" title="The computer offers clearances by itself">Automatic</button><button class="btn mini" data-mode="supervised" aria-pressed="false" title="A person approves every offer">Person approves</button></span></div>
+    <div class="pills"><span class="pill" id="linkPill"><i class="dot" id="linkDot"></i><span id="linkTxt">Connecting…</span></span><span class="pill" id="verifyPill" title="Verified / total datalink messages">✓ 0 / 0</span><span class="mono clock" id="clock">00:00</span></div>
+  </header>
+  <div id="banner" class="banner" hidden role="alert"></div>
+
+  <div class="grid">
+    <section class="col left">
+      <div class="panel strip">
+        <div class="panel-title"><span>Aircraft</span><span class="pill" id="stripPhase">—</span></div>
+        <div class="strip-id"><b>VH-101</b><span class="muted">V6 air taxi</span></div>
+        <div class="strip-grid">
+          <div><small>Altitude</small><b id="sAlt">—</b></div><div><small>Speed</small><b id="sGs">—</b></div><div><small>Heading</small><b id="sHdg">—</b></div><div><small>Battery</small><b id="sBat">—</b></div>
+          <div><small>Pad</small><b id="sPad">—</b></div><div><small>Distance</small><b id="sDist">—</b></div><div><small>Vertical</small><b id="sVs">—</b></div><div><small>Power</small><b id="sPow">—</b></div>
+        </div>
+        <div class="strip-line"><small>Clearance</small><span id="sClr">none</span></div>
+        <div class="strip-line"><small>Request</small><span id="sReq">none</span></div>
+      </div>
+
+      <div class="panel approval" id="approval" hidden>
+        <div class="panel-title"><span>Your decision</span><span class="pill warn">Action needed</span></div>
+        <p id="apText" class="ap-text"></p>
+        <label class="ap-pick">Pad <select id="apPad"></select></label>
+        <div class="row"><button class="btn primary" id="apGo">Approve</button><button class="btn danger" id="apDeny">Hold</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title"><span>Step in</span></div>
+        <div class="ivn"><button class="btn warn" id="ivHold">Hold</button><button class="btn warn" id="ivGo">Go around</button><button class="btn danger wide" id="ivRevoke">Cancel clearance</button></div>
+        <details class="tests"><summary>Test the safety checks</summary>
+          <div class="ivn"><button class="btn" id="fxTamper">Send fake message</button><button class="btn" id="fxReplay">Replay a message</button><button class="btn warn wide" id="fxLink">Drop the radio link (10 s)</button></div>
+          <p class="small muted">A fake or replayed message must be rejected without changing anything. A dropped link cancels the session and clearance.</p>
+        </details>
+        <p class="notice" id="notice" role="status"></p>
+      </div>
+    </section>
+
+    <section class="col center">
+      <div class="panel radar-panel">
+        <div class="panel-title"><span>Terminal radar</span><span class="seg" role="group" aria-label="Radar zoom"><button class="btn mini" data-range="auto" aria-pressed="true">Auto</button><button class="btn mini" data-range="term" aria-pressed="false">Close</button><button class="btn mini" data-range="area" aria-pressed="false">Wide</button></span></div>
+        <canvas id="radar" role="img" aria-label="Terminal radar with five pads and the aircraft"></canvas>
+        <div class="legend"><span><i style="background:#4ade80"></i>Free</span><span><i style="background:#6cb6ff"></i>Reserved</span><span><i style="background:#f5b544"></i>Occupied</span><span><i style="background:#ff5a6a"></i>Blocked</span><span><i style="background:#6b7280"></i>Closed</span></div>
+      </div>
+      <div class="panel log-panel">
+        <div class="tabs" role="tablist"><button class="btn mini" role="tab" id="tabDec" aria-selected="true">Why the computer did it</button><button class="btn mini" role="tab" id="tabMsg" aria-selected="false">Verified messages <span class="dim" id="msgCount">0</span></button></div>
+        <div id="decs" role="tabpanel"></div>
+        <div id="msgs" role="tabpanel" hidden></div>
+      </div>
+    </section>
+
+    <section class="col right">
+      <div class="panel">
+        <div class="panel-title"><span>Pads</span><span class="dim small">one air taxi per pad</span></div>
+        <div id="pads" class="pads"></div>
+      </div>
+      <div class="panel wx">
+        <div class="panel-title"><span>Weather</span><span class="pill" id="wxPill">—</span></div>
+        <label>Wind <b id="wxSpeedV"></b><input type="range" id="wxSpeed" min="0" max="20" step="0.5" aria-label="Wind speed"></label>
+        <label>Gusts <b id="wxIntV"></b><input type="range" id="wxInt" min="0" max="5" step="0.5" aria-label="Gust strength"></label>
+        <label>From <b id="wxDirV"></b><input type="range" id="wxDir" min="0" max="359" step="5" aria-label="Wind direction"></label>
+        <p class="small muted" id="wxNote"></p>
+      </div>
+    </section>
   </div>
-</header>
-<div id="banner" class="banner" hidden></div>
-
-<main class="ops">
-  <section class="ops-left">
-    <div class="panel strip" id="strip">
-      <div class="panel-title"><span>Traffic</span><span class="pill" id="stripPhase">—</span></div>
-      <div class="strip-id"><b>VH-101</b><span class="muted">V6 UAM · Vahnim Demo Air</span></div>
-      <div class="strip-grid">
-        <div><small>ALT</small><b id="sAlt">—</b></div><div><small>GS</small><b id="sGs">—</b></div><div><small>HDG</small><b id="sHdg">—</b></div><div><small>BATT</small><b id="sBat">—</b></div>
-        <div><small>PAD</small><b id="sPad">—</b></div><div><small>DIST</small><b id="sDist">—</b></div><div><small>V/S</small><b id="sVs">—</b></div><div><small>POWER</small><b id="sPow">—</b></div>
-      </div>
-      <div class="strip-line"><small>Clearance</small><span id="sClr">none</span></div>
-      <div class="strip-line"><small>Request</small><span id="sReq">none</span></div>
-      <div class="strip-line"><small>Step</small><span id="sStep">—</span></div>
-    </div>
-
-    <div class="panel approval" id="approval" hidden>
-      <div class="panel-title"><span>Supervisor approval</span><span class="pill warn">Action required</span></div>
-      <p id="apText" class="ap-text"></p>
-      <label class="ap-pick">Pad <select id="apPad"></select></label>
-      <div class="row"><button class="btn primary" id="apGo">Approve</button><button class="btn danger" id="apDeny">Deny · hold</button></div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-title"><span>Operator interventions</span></div>
-      <div class="ivn">
-        <button class="btn warn" id="ivHold">Issue hold</button>
-        <button class="btn warn" id="ivGo">Order go-around</button>
-        <button class="btn danger wide" id="ivRevoke">Revoke clearance</button>
-      </div>
-      <p class="small muted">Automation acts first; these override it. Overrides are logged and signed like any other datalink message.</p>
-    </div>
-  </section>
-
-  <section class="ops-center">
-    <div class="panel radar-panel">
-      <div class="panel-title"><span>Terminal radar · north up</span><span class="seg" role="group" aria-label="Radar range"><button class="btn mini" data-range="auto" aria-pressed="true">Auto</button><button class="btn mini" data-range="term" aria-pressed="false">Terminal</button><button class="btn mini" data-range="area" aria-pressed="false">Area</button></span></div>
-      <canvas id="radar" aria-label="Terminal radar"></canvas>
-      <div class="legend"><span><i style="background:#5be9c5"></i>Free</span><span><i style="background:#4fd2f5"></i>Reserved</span><span><i style="background:#ffb454"></i>Occupied</span><span><i style="background:#ff5566"></i>Obstructed</span><span><i style="background:#6b7f8c"></i>Closed</span></div>
-    </div>
-    <div class="ops-logs">
-      <div class="panel log-panel"><div class="panel-title"><span>Verified datalink</span><span class="dim small" id="msgCount">0 messages</span></div><div id="msgs"></div></div>
-      <div class="panel log-panel"><div class="panel-title"><span>Automation decisions</span><span class="dim small">why the node did what it did</span></div><div id="decs"></div></div>
-    </div>
-  </section>
-
-  <section class="ops-right">
-    <div class="panel">
-      <div class="panel-title"><span>Pads</span><span class="dim small">5 pads · 1 UAM per pad</span></div>
-      <div id="pads" class="pads"></div>
-    </div>
-    <div class="panel wx">
-      <div class="panel-title"><span>Weather</span><span class="pill" id="wxPill">—</span></div>
-      <label>Wind <b id="wxSpeedV"></b><input type="range" id="wxSpeed" min="0" max="20" step="0.5"></label>
-      <label>Gust intensity <b id="wxIntV"></b><input type="range" id="wxInt" min="0" max="5" step="0.5"></label>
-      <label>From <b id="wxDirV"></b><input type="range" id="wxDir" min="0" max="359" step="5"></label>
-      <p class="small muted" id="wxNote"></p>
-    </div>
-    <div class="panel">
-      <div class="panel-title"><span>Verification & fault tests</span></div>
-      <div class="ivn">
-        <button class="btn" id="fxTamper">Send forged message</button>
-        <button class="btn" id="fxReplay">Replay last message</button>
-        <button class="btn warn wide" id="fxLink">Drop datalink 10 s</button>
-      </div>
-      <p class="small muted">Forged and replayed messages must be rejected without changing state. A link drop invalidates the session and clearance.</p>
-      <p class="notice" id="notice" role="status"></p>
-    </div>
-  </section>
 </main>
 
-<div class="modal" id="doneModal" hidden><div class="glass">
-  <div class="eyebrow">Session complete</div><h2>Turnaround complete</h2><div id="doneStats" class="done-stats"></div>
+<div class="modal" id="doneModal" hidden role="dialog" aria-modal="true" aria-labelledby="doneTitle"><div class="glass">
+  <div class="eyebrow">Session complete</div><h2 id="doneTitle">Turnaround complete</h2><div id="doneStats" class="done-stats"></div>
   <div class="row"><button class="btn primary" id="doneRestart">Restart scenario</button><button class="btn" id="doneClose">Close</button></div>
 </div></div>
 
-<script src="n1-link.js"></script><script src="n1-ui.js"></script><script src="n1-map.js"></script><script src="n1-ground.js"></script>
-<script src="site-nav.js"></script></body></html>
+<script src="n1-link.js"></script><script src="n1-ui.js"></script><script src="n1-map.js"></script><script src="n1-ground.js"></script><script src="site-nav.js"></script>
+</body></html>

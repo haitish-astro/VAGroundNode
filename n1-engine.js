@@ -27,11 +27,11 @@
   const REGISTRY = { [AC_ID]: { operator: 'Vahnim Demo Air', type: 'UAM', model: 'V6', authorized: true } };
 
   const SCENARIOS = {
-    nominal:    { label: 'Nominal arrival', note: 'Calm wind, clear pads.', wind: [4, 1, 315], battery: 58, drill: null },
-    windy:      { label: 'Gusty wind hold', note: 'Peak wind exceeds the limit: automation holds the request until the operator eases the wind.', wind: [11, 3, 300], battery: 58, drill: null },
-    incursion:  { label: 'Pad incursion drill', note: 'Debris appears on the assigned pad on short final: go-around, revoke, divert.', wind: [5, 1.5, 315], battery: 58, drill: 'incursion' },
-    lowbattery: { label: 'Low battery priority', note: 'Battery below reserve: priority handling, no supervisor delay.', wind: [4, 1, 315], battery: 21, drill: null },
-    linkloss:   { label: 'Link-loss drill', note: 'Datalink drops on approach: aircraft goes around and holds; session must be re-established.', wind: [4, 1, 315], battery: 58, drill: 'linkloss' }
+    nominal:    { label: 'Normal landing', note: 'Calm wind and clear pads.', wind: [4, 1, 315], battery: 58, drill: null },
+    windy:      { label: 'Strong wind', note: 'The wind is too strong to land, so the request is held until the ground team eases the wind.', wind: [11, 3, 300], battery: 58, drill: null },
+    incursion:  { label: 'Something on the pad', note: 'Debris appears on the assigned pad just before landing: go around and use another pad.', wind: [5, 1.5, 315], battery: 58, drill: 'incursion' },
+    lowbattery: { label: 'Low battery', note: 'The battery is low, so the request is treated as urgent and needs no approval.', wind: [4, 1, 315], battery: 21, drill: null },
+    linkloss:   { label: 'Radio link drops', note: 'The radio link drops during the approach: the aircraft goes around and holds until you reconnect.', wind: [4, 1, 315], battery: 58, drill: 'linkloss' }
   };
 
   // ---------- helpers ----------

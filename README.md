@@ -1,50 +1,65 @@
 # Vahnim GroundNode — urban flight simulation
 
-**User manual (PDF):** [docs/Vahnim-Simulation-User-Manual.pdf](docs/Vahnim-Simulation-User-Manual.pdf) (source: `docs/manual.html`). Home is the city simulation (`index.html`); every page has the same top bar with a **← Home** button.
+Vahnim's aircraft-to-ground coordination software, shown as a live simulation: a five-pad city terminal, a pilot screen, a ground-control screen and a live 3D view, all on one shared engine.
 
-## Vahnim Ground-N1 (main demo)
+**Quick start:** `npm install`, then `npm start`, then open http://localhost:8123 (Chrome or Edge). `npm test` runs every check.
+**User manual (PDF):** [docs/Vahnim-Simulation-User-Manual.pdf](docs/Vahnim-Simulation-User-Manual.pdf) (source: `docs/manual.html`).
 
-Run `npm start`, then open http://localhost:8123/n1.html. Ground-N1 is the proprietary aircraft-to-ground-node software concept: **two software screens and a live window running one shared simulation**.
+## Pages
 
-| Window | File | Who uses it |
+Every page shares one header (`site-nav.js`): the Vahnim logo (click for home), **Home**, **Ground-N1 demo**, **Explore**, **Guide**, and a **Help** button that explains the current page in plain words.
+
+| Section | Page | Purpose |
 | --- | --- | --- |
-| Pilot screen | `n1-pilot.html` | UAM pilot: glass-cockpit PFD, moving map, Vahnim Link clearance card, action buttons, verified datalink |
-| Ground control | `n1-ground.html` | Ground-control team for the area: radar, five pad controls, weather, supervisor approvals, fault tests, automation log |
-| Live window | `n1-live.html` | 3D view of the five-pad terminal and VH-101 approaching, director camera, event captions, datalink pulses |
-| Launcher | `n1.html` | Scenario, supervision mode, speed, autoplay; opens the three windows |
-| Demo wall | `n1-wall.html` | All three screens tiled on one display |
+| Home | `index.html` | City simulation: five pads, air taxis and drones flying out, hovering, returning and charging |
+| Ground-N1 demo | `n1.html` | Launcher: pick a story, then start (3 windows), all on one screen, or play the film |
+| | `n1-pilot.html` | Pilot: flight display, terminal map, one guidance card with a single main button, verified messages |
+| | `n1-ground.html` | Ground control: radar, aircraft strip, five pad controls, weather, approvals, decisions log |
+| | `n1-live.html` | Live 3D view with director camera and event captions |
+| | `n1-wall.html` | All three screens on one display (`?film=1` plays a hands-free film for recording) |
+| Explore | `explore.html` | Plain-language menu and glossary |
+| | `comms.html` | Guided encounter: private simulation, cockpit-seat view, coach, "cause a problem" buttons |
+| | `hangar.html` | Aircraft models with hover, cruise and parked modes and key facts |
+| | `smart-pad.html`, `coordination-lab.html` | Smart pad concept and integration lab |
 
-**Start:** click *Start demo · open 3 windows* (allow pop-ups) or use the Demo wall. All windows must be in the same browser; they share one SharedWorker, so the simulation keeps running while a window is in the background. Without SharedWorker support each page falls back to a private in-page simulation (add `?local=1` to force that).
+All Ground-N1 windows must be in the same browser: they share one SharedWorker, so the simulation keeps running while a window is in the background. If SharedWorker is unavailable or fails, a page falls back to a private in-page simulation (add `?local=1` to force it; `?room=name` gives a separate shared simulation). Screens show a "Connecting" or "Connection lost" banner instead of freezing silently.
 
-**Flow (pilot presses, ground automation answers):** Connect (signed HELLO, registry check) → Request landing → automation assesses the five pads, wind and battery and offers a clearance → Accept with the read-back code (the node verifies the digest) → Engage approach (guidance flies the fix, short final and descent) → touchdown → Propulsion safe → automated charging → Request departure → clearance → Engage departure → climb-out. **Enter** presses the highlighted next step; **G** commands a go-around.
+## Ground-N1 in one paragraph
 
-**Verified messages:** every datalink message carries a sequence number, timestamp and signature, and shows TX / RX / SIG / ACK chips. The ground screen's *Send forged message* and *Replay last message* buttons show that a bad signature or a replayed sequence is rejected without changing state. Signing is a keyed demo hash, not cryptography.
+The pilot connects (signed hello checked against a registry), requests landing, the ground computer assesses five pads, wind and battery and offers a clearance, the pilot accepts with a read-back code the node verifies, the autopilot flies the approach, the aircraft lands, charges (time-compressed) and departs. Every datalink message carries a sequence number, timestamp and signature and shows TX / RX / SIG / ACK; forged and replayed messages are rejected without changing state (signing is a demo hash, not cryptography). **Enter** presses the highlighted next step, **G** commands a go-around.
 
-**Scenarios:** nominal; gusty wind hold; pad-incursion drill (revoke, go-around, divert); low-battery priority; link-loss drill. **Supervision:** *Automatic* offers clearances immediately; *Supervised* holds each recommendation until a ground operator approves it, overrides the pad or denies it. **Autoplay** lets the pilot press every recommended step for hands-free presentations.
+**Stories:** Normal landing, Strong wind, Something on the pad (revoke, go-around, divert), Low battery (priority), Radio link drops. **Approvals:** *the computer* offers clearances at once, or *a person* on the ground approves each one. **Autoplay** lets the pilot press every step for hands-free presentations.
 
-### Physics and models
+## Physics and models
 
-`flight-dynamics.js` is a point-mass plus attitude model. Desired acceleration becomes a required thrust vector (with gravity and air-relative drag); commanded tilt drives a second-order attitude response; rotor lag limits thrust; wind and gusts act through drag; an integral trim (with anti-windup) absorbs steady wind; ground effect trims hover power; battery energy follows momentum-theory power plus parasitic power.
+`flight-dynamics.js` is a point-mass plus attitude model. Desired acceleration becomes a required thrust vector (with gravity and air-relative drag); commanded tilt drives a second-order attitude response; rotor lag limits thrust; wind and gusts act through drag; an integral trim (with anti-windup) absorbs steady wind; ground effect trims hover power; battery energy follows momentum-theory power plus parasitic power. `sim.js` (city) uses the same idea for attitude: tilt follows acceleration, yaw is rate-limited, hover is still.
 
-`aircraft-model.js` builds the Vahnim V6 lift-plus-cruise UAM (lofted fuselage, swept wing, six lift rotors, pusher, V-tail, gear, navigation and strobe lights) and the S4 ducted quad UAV (sensor gimbal, optional cargo pod), with sky-based reflections from `createSkyEnvironment`. `hangar.html` is a turntable viewer. The city simulation and the cockpit encounter use the same models.
+`aircraft-model.js` builds the Vahnim V6 lift-plus-cruise UAM and the S4 ducted quad UAV with sky-based reflections. `n1-coach.js` holds the plain-language wording used by the pilot card and the guided encounter.
 
-### Tuning cheat-sheet (small changes later)
+## Design and quality
+
+- **Design system:** `n1.css` tokens (`:root`): graphite surfaces, copper accent from the logo, semantic green / amber / red / blue. Reduced-motion and keyboard focus are supported everywhere. The logo is `assets/vahnim-logo.webp` (transparent), cropped in `site-nav.css`.
+- **One source of truth:** state comes from one engine (`n1-engine.js`); wording from `n1-coach.js`; the header from `site-nav.js`.
+- **Server:** `serve.js` serves only the app's files (no dotfiles, tests, package files or other `node_modules`), with nosniff, referrer and frame headers, ETag caching and clear errors. It listens on this computer only unless `HOST=0.0.0.0` is set; `PORT` changes the port.
+- **Tests (`npm test`):** city simulation and flight feel (`sim.test.js`), protocol, coordination, classic encounter, Ground-N1 engine (`n1.test.js`: physics bounds, handshake, readback mismatch, forged and replayed messages, wind hold, incursion, link loss, supervised approval, low battery, determinism) and static site checks (`site.test.js`: every local file, script syntax, element ids used by scripts, navigation targets, server rules).
+
+## Tuning cheat-sheet (small changes later)
 
 | Change | Where |
 | --- | --- |
 | Pad positions in the Ground-N1 terminal | `PAD_DEFS` in `n1-engine.js` |
 | Pad positions in the city simulation | `DEFAULT_STATIONS` in `sim.js` |
 | Wind limit, offer and accept timeouts, departure battery minimum, charge rate | `config` in `create()` in `n1-engine.js` |
-| Scenario presets (wind, battery, drills) | `SCENARIOS` in `n1-engine.js` |
+| Stories (wind, battery, drills, labels) | `SCENARIOS` in `n1-engine.js` and the list in `n1-launch.js` |
 | Datalink latency | `LATENCY` in `n1-engine.js` |
+| Plain-language wording | `n1-coach.js` (pilot card and guided encounter), `EXPLAIN` in `site-nav.js` (Help) |
 | Aircraft mass, speed, acceleration, tilt, battery | `PROFILES` in `flight-dynamics.js` |
 | Aircraft geometry and livery colours | `materials()`, `buildUAM`, `buildUAV` in `aircraft-model.js` |
-| Screen colours and typography (all three screens) | `:root` in `n1.css` |
-| Camera shots in the live window | `shot()` and `chooseAuto()` in `n1-live.js` |
+| Colours and typography for all screens | `:root` in `n1.css` (city page: `style.css`) |
+| Header sections and pages | `SECTIONS` in `site-nav.js` |
+| Camera shots in the live view | `shot()` and `chooseAuto()` in `n1-live.js` |
 
-**Limits:** one aircraft is simulated; the other pads show parked aircraft. Flight dynamics are illustrative, not validated aerodynamics. Charging is time-compressed for the demo. The pilot screen is a software concept, not an FMS or certified flight instrument. Registry, readback and signing are demonstrations, and no FAA compliance is claimed.
-
-`npm test` also runs `n1.test.js`: physics bounds, verified handshake, readback mismatch, forged and replayed messages, wind hold, incursion drill, link loss, supervised approval, low-battery priority and determinism.
+**Limits:** one aircraft is simulated in Ground-N1; the other pads show parked aircraft. Flight dynamics are illustrative, not validated aerodynamics. Charging is time-compressed. The pilot screen is a software concept, not an FMS or certified flight instrument. Registry, readback and signing are demonstrations, and no FAA compliance is claimed.
 
 ---
 

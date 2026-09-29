@@ -1,5 +1,5 @@
 :root {
-  --bg: #0a0b0f;
+  --bg: #0a0c10;
   --bg-elevated: #101218;
   --panel: #15171d;
   --panel-2: #1b1e26;
@@ -8,10 +8,10 @@
   --text-dim: #9a978f;
   --text-faint: #6b6960;
 
-  --orange: #ff6a1a;
-  --orange-bright: #ff9152;
-  --orange-dim: rgba(255, 106, 26, 0.35);
-  --orange-wash: rgba(255, 106, 26, 0.10);
+  --orange: #e07a3c;
+  --orange-bright: #f0975c;
+  --orange-dim: rgba(224, 122, 60, 0.35);
+  --orange-wash: rgba(224, 122, 60, 0.10);
 
   --green: #3ddc84;
   --yellow: #ffcc4d;
@@ -446,3 +446,9 @@ select, .camera-tools button, .model-upload { background:#17232d; color:#e8f1f5;
 }
 .showcase-nav {display:flex;gap:6px;flex-wrap:wrap;margin:0 16px}.showcase-nav a{color:var(--text-dim);padding:8px 10px;border:1px solid transparent;border-radius:6px;text-decoration:none;font-size:12px}.showcase-nav a:hover,.showcase-nav a[aria-current]{border-color:var(--border);color:var(--orange-bright)}.showcase-nav a:focus-visible{outline:2px solid var(--orange)}@media(max-width:900px){.topbar{flex-wrap:wrap;gap:10px}.showcase-nav{order:3;width:100%;margin:0}}
 html {color-scheme:dark}.controls-bar{flex-wrap:wrap}.playback{min-width:0}.topbar{min-width:0}.live-badge{flex-shrink:0}@media(max-width:1000px){.app{height:auto;min-height:100vh}.main-grid{overflow:visible}.map-wrap{grid-row:1}.comms-panel,.detail-panel{max-height:500px}.scene-focus .app{height:100vh}}
+
+/* Page heading (the Vahnim logo lives in the shared site header) */
+.page-head { display: flex; flex-direction: column; gap: 2px; }
+.page-title { margin: 0; font-size: 20px; letter-spacing: 0.1px; }
+.page-head .brand-sub { font-size: 12px; font-weight: 400; color: var(--text-dim); }
+.webgl-note { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--text-dim); }

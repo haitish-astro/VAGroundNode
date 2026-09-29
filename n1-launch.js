@@ -4,11 +4,11 @@
   const $ = id => document.getElementById(id);
   let link = null, st = null, scenarios = {};
   const SCENARIOS = [
-    ['nominal', 'Nominal arrival', 'Calm wind, clear pads.'],
-    ['windy', 'Gusty wind hold', 'Peak wind exceeds the limit: automation holds the request until the operator eases the wind on the ground screen.'],
-    ['incursion', 'Pad incursion drill', 'Debris appears on the assigned pad on short final: revoke, go-around and divert to another pad.'],
-    ['lowbattery', 'Low battery priority', 'Battery below reserve: priority handling that skips supervisor approval.'],
-    ['linkloss', 'Link-loss drill', 'The datalink drops on approach: go-around, hold and re-establish the session.']
+    ['nominal', 'Normal landing', 'Calm wind and clear pads.'],
+    ['windy', 'Strong wind', 'The wind is too strong to land, so the request is held until the ground team eases the wind.'],
+    ['incursion', 'Something on the pad', 'Debris appears on the assigned pad just before landing: go around and use another pad.'],
+    ['lowbattery', 'Low battery', 'The battery is low, so the request is treated as urgent and needs no approval.'],
+    ['linkloss', 'Radio link drops', 'The radio link drops during the approach: the aircraft goes around and holds until you reconnect.']
   ];
   for (const [id, label, note] of SCENARIOS) { const o = document.createElement('option'); o.value = id; o.textContent = label; $('scenario').append(o); scenarios[id] = note; }
   const noteFor = () => { $('scenarioNote').textContent = scenarios[$('scenario').value]; };
@@ -31,7 +31,7 @@
       ['n1-ground.html', 'n1-ground', `left=${left + Math.round(w * .5)},top=${top},width=${Math.round(w * .5)},height=${h}`]
     ];
     const opened = specs.map(([url, name, feat]) => window.open(url, name, feat));
-    if (opened.some(x => !x)) $('popupNote').textContent = 'Your browser blocked some windows. Allow pop-ups for this site, or open the three screens from the cards below (or use the Demo wall).';
+    if (opened.some(x => !x)) $('popupNote').textContent = 'Your browser blocked some windows. Allow pop-ups for this site, or open the screens from the Ground-N1 menu, or use All on one screen.';
     else $('popupNote').textContent = 'Windows opened. Move the live window to a second display if you have one.';
   };
 

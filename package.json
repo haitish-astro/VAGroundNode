@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start": "node serve.js",
-    "test": "node sim.test.js && node protocol.test.js && node coordination.test.js && node encounter.test.js && node n1.test.js"
+    "test": "node sim.test.js && node protocol.test.js && node coordination.test.js && node encounter.test.js && node n1.test.js && node site.test.js"
   },
   "dependencies": {
     "three": "0.184.0"

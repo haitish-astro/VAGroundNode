@@ -16,7 +16,7 @@ function setText(node, t) { if (node.textContent !== t) node.textContent = t; }
 // ---------------------------------------------------------------- scene
 function build(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(42, 1, .3, 3000);
   const sky = createSkyEnvironment(renderer); scene.environment = sky.envMap; scene.add(sky.dome); scene.fog = new THREE.Fog('#cfe0e8', 260, 1500);
@@ -154,7 +154,9 @@ function updateHud() {
   const pad = a.padId && st.pads.find(p => p.id === a.padId); setText($('tPad'), pad ? pad.name : st.clearance ? st.clearance.padName : '—');
 }
 
-function frame(now) {
+// One bad frame must never stop the picture: errors are logged and the loop continues.
+function frame(now) { try { frameInner(now); } catch (err) { console.error('Live render error', err); requestAnimationFrame(frame); } }
+function frameInner(now) {
   const dt = Math.max(0, Math.min(.1, (now - lastFrame) / 1000)); lastFrame = now; time += dt;
   if (st && view) {
     const a = st.ac, age = link ? Math.min(.12, link.age()) : 0, k = 1 - Math.exp(-dt * 14);
@@ -248,14 +250,12 @@ function onLog(log) {
     else { firePulse(m.from === 'VH-101' ? 1 : -1); caption(m.kind, m.text); }
   }
   seenReady = true;
-  const tk = $('ticker'), tkKey = list.slice(-3).map(m => m.id + m.status + m.ack).join(); if (tk.dataset.key === tkKey) return; tk.dataset.key = tkKey;
-  tk.replaceChildren(...list.slice(-3).map(m => { const row = el('div', 'tick ' + (m.verified === false ? 'bad' : m.from === 'VH-101' ? 'air' : '')); row.append(el('b', '', (m.from === 'VH-101' ? 'AIR→' : 'NODE→') + m.kind.replaceAll('_', ' ')), el('span', '', m.text), el('i', '', m.verified === false ? '✗ REJECTED' : m.verified ? '✓ VERIFIED' : '…')); return row; }));
 }
 
 // ---------------------------------------------------------------- boot
 document.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => setCam(b.dataset.cam));
 function setCam(mode) { camMode = mode; document.querySelectorAll('[data-cam]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cam === mode))); if (mode !== 'auto') autoSince = 0; }
-function toggleClean() { clean = !clean; $('hud').classList.toggle('clean', clean); const nav = document.getElementById('site-nav'); if (nav) nav.style.display = clean ? 'none' : ''; }
+function toggleClean() { clean = !clean; $('hud').classList.toggle('clean', clean); const nav = document.getElementById('site-header'); if (nav) nav.style.display = clean ? 'none' : ''; }
 $('hudToggle').onclick = toggleClean;
 addEventListener('keydown', e => { if (e.target.closest('input,select,textarea')) return; const map = { 1: 'auto', 2: 'chase', 3: 'pad', 4: 'tower', 5: 'orbit', 6: 'cockpit' }; if (map[e.key]) setCam(map[e.key]); if (e.key === 'h' || e.key === 'H') toggleClean(); if (e.key === 'f' || e.key === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); } });
 

@@ -1,26 +1,18 @@
 /* Ground-N1 launcher */
-body.launcher{min-height:100vh;display:grid;grid-template-rows:auto 1fr auto}
-.l-top{display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--teal),#1b8f78);color:#04150f;font-weight:800;display:grid;place-items:center}
-.brand b{letter-spacing:.16em;font-size:14px;display:block}.brand small{color:var(--muted);font-size:12px}
-.win-nav{display:flex;gap:8px}.win-nav a{color:var(--muted);text-decoration:none;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:5px 11px}.win-nav a:hover{color:var(--teal);border-color:var(--teal)}
-.l-main{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:32px;padding:44px 28px;max-width:1360px;width:100%;margin:0 auto;align-items:start}
-.hero h1{font-size:clamp(40px,6vw,68px);letter-spacing:-.02em;line-height:1.02;margin:10px 0 16px;background:linear-gradient(90deg,#fff,#8fe9d3);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:18px;color:#b7ccd6;max-width:62ch;margin-bottom:26px}
+body.launcher{min-height:100vh;display:flex;flex-direction:column}
+.l-main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:40px;padding:48px 32px 32px;max-width:1280px;width:100%;margin:0 auto;align-items:start}
+.hero h1{font-size:clamp(34px,4.6vw,56px);letter-spacing:-.02em;line-height:1.06;margin:10px 0 18px;color:#fff;max-width:16ch}
+.lead{font-size:18px;color:#b9c1ca;max-width:58ch;margin-bottom:26px}
 .cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.btn.big{padding:14px 22px;font-size:15px;text-decoration:none;display:inline-block;border-radius:11px}
-.screens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:34px}
-.card{display:grid;gap:8px;align-content:start;padding:18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(17,36,52,.6),rgba(10,21,32,.6));color:var(--text);text-decoration:none;transition:border-color .15s,transform .15s}
-.card:hover{border-color:var(--teal);transform:translateY(-2px)}.card b{font-size:17px}.card p{color:var(--muted);font-size:13px}
-.card .tag{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal);font-weight:700}.card .tag.amber{color:var(--amber)}.card .tag.violet{color:var(--violet)}
-.card .open{color:var(--dim);font-size:12px;margin-top:4px}
-.control{position:sticky;top:20px;display:grid;gap:12px}
+.parts{list-style:none;margin:34px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.parts li{padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(24,29,38,.5);display:grid;gap:4px}
+.parts b{font-size:15px}.parts span{font-size:13px;color:var(--muted)}
+.control{position:sticky;top:calc(var(--navh) + 16px);display:grid;gap:12px}
 .field{display:grid;gap:6px}.field>span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .seg{display:flex;gap:6px}.seg .btn{flex:1;padding:7px 8px}
 .row{display:flex;gap:10px}.row .btn{flex:1}
-.live-status{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0a1620}
-.live-status small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em}.live-status b{font-family:var(--mono);font-size:13px}
-hr{border:0;border-top:1px solid var(--line);margin:4px 0}
-.script{margin:0;padding-left:18px;color:#b7ccd6;font-size:13px;display:grid;gap:5px}.script b{color:var(--teal)}
-.l-foot{padding:16px 28px;border-top:1px solid var(--line);max-width:1360px;margin:0 auto;width:100%}
-@media (max-width:1040px){.l-main{grid-template-columns:1fr}.control{position:static}.screens{grid-template-columns:1fr}}
+.live-status{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0f1218}
+.live-status small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.live-status b{font-family:var(--mono);font-size:13px}
+.opts{display:grid;gap:12px}.opts>.field{margin-top:10px}
+.l-foot{padding:16px 32px 22px;border-top:1px solid var(--line);max-width:1280px;margin:0 auto;width:100%}
+@media (max-width:1000px){.l-main{grid-template-columns:1fr;padding-top:28px}.control{position:static}.parts{grid-template-columns:1fr}}

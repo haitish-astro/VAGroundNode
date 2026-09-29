@@ -1,51 +1,42 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vahnim Ground-N1 — demo launcher</title>
-<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="n1-launch.css">
-<link rel="stylesheet" href="site-nav.css"></head>
+<title>Ground-N1 demo · Vahnim</title>
+<meta name="description" content="Vahnim Ground-N1: aircraft-to-ground coordination software. One air taxi, one ground node, three screens on one shared simulation.">
+<link rel="stylesheet" href="n1.css"><link rel="stylesheet" href="n1-launch.css"><link rel="stylesheet" href="site-nav.css">
+</head>
 <body class="n1-body launcher">
-<header class="l-top"><div class="brand"><span class="brand-mark">N1</span><div><b>VAHNIM GROUND-N1</b><small>Aircraft ↔ GroundNode coordination software · simulation demo</small></div></div>
-  </header>
-
-<main class="l-main">
+<noscript><p style="padding:24px">This demo needs JavaScript.</p></noscript>
+<main id="main" class="l-main">
   <section class="hero">
-    <div class="eyebrow">One aircraft · one ground node · three windows</div>
-    <h1>Fly the handshake.</h1>
-    <p class="lead">A UAM pilot and a ground-control team run the same simulation from two proprietary screens while a live window shows the five-pad terminal. Every instruction is a signed, verified datalink message; the ground automation explains each decision.</p>
+    <div class="eyebrow">Ground-N1</div>
+    <h1>An air taxi and the ground, talking to each other.</h1>
+    <p class="lead">A pilot and a ground-control team share one live simulation. Every instruction between them is signed and checked, and the ground computer explains each decision it makes.</p>
     <div class="cta">
-      <button class="btn primary big" id="openAll">Start demo · open 3 windows</button>
-      <a class="btn big" href="n1-wall.html">Demo wall · one screen</a>
+      <button class="btn primary big" id="openAll">Start the demo</button>
+      <a class="btn big" href="n1-wall.html">All on one screen</a>
+      <a class="btn big ghost" href="n1-wall.html?film=1" title="Runs a full landing and take-off by itself, for screen recording">Play the film</a>
     </div>
-    <p class="small muted" id="popupNote">Windows open side by side; allow pop-ups for this site if your browser blocks them. All three connect to one shared simulation in this browser.</p>
-    <div class="screens">
-      <a class="card" href="n1-pilot.html" target="n1-pilot"><span class="tag">Screen 1</span><b>Pilot · VH-101</b><p>Glass-cockpit PFD, moving map and Vahnim Link. Request, read back, engage, land, charge, depart.</p><span class="open">Open ↗</span></a>
-      <a class="card" href="n1-ground.html" target="n1-ground"><span class="tag amber">Screen 2</span><b>Ground control · GN</b><p>Radar, five pad controls, weather, supervisor approvals, fault tests and the automation log.</p><span class="open">Open ↗</span></a>
-      <a class="card" href="n1-live.html" target="n1-live"><span class="tag violet">Live window</span><b>Terminal 3D view</b><p>The pad and the UAM approaching in real time, director camera, captions and datalink pulses.</p><span class="open">Open ↗</span></a>
-    </div>
+    <p class="small muted" id="popupNote">Start opens the pilot screen, the ground team screen and a 3D view in three windows (allow pop-ups). They all follow the same simulation.</p>
+    <ul class="parts">
+      <li><b>Pilot</b><span>Cockpit display, map, and one button for each next step.</span></li>
+      <li><b>Ground control</b><span>Radar, five pads, weather, and a person who can step in.</span></li>
+      <li><b>Live view</b><span>A 3D camera over the five-pad terminal.</span></li>
+    </ul>
   </section>
 
-  <aside class="control glass">
+  <aside class="control glass" aria-label="Demo controls">
     <div class="panel-title"><span>Demo control</span><span class="pill" id="statusPill">Connecting…</span></div>
     <div class="live-status" id="liveStatus"><div><small>Phase</small><b id="lsPhase">—</b></div><div><small>Time</small><b id="lsTime">00:00</b></div><div><small>Verified</small><b id="lsVer">—</b></div><div><small>Windows</small><b id="lsWin">—</b></div></div>
-
-    <label class="field"><span>Scenario</span><select id="scenario"></select></label>
+    <label class="field"><span>Story</span><select id="scenario"></select></label>
     <p class="small muted" id="scenarioNote"></p>
-    <div class="field"><span>Supervision</span><div class="seg"><button class="btn" data-mode="auto" aria-pressed="true">Automatic</button><button class="btn" data-mode="supervised" aria-pressed="false">Supervised</button></div></div>
-    <div class="field"><span>Speed</span><div class="seg"><button class="btn" data-speed="0.5" aria-pressed="false">½×</button><button class="btn" data-speed="1" aria-pressed="true">1×</button><button class="btn" data-speed="2" aria-pressed="false">2×</button><button class="btn" data-speed="4" aria-pressed="false">4×</button></div></div>
-    <div class="field"><span>Autoplay</span><button class="btn" id="autoplay" aria-pressed="false">Pilot flies itself</button></div>
-    <div class="row"><button class="btn primary" id="restart">Restart scenario</button><button class="btn" id="pause">Pause</button></div>
-    <hr>
-    <div class="panel-title"><span>Presenter script</span></div>
-    <ol class="script">
-      <li>Pilot: <b>Connect</b>. Ground shows the registry check.</li>
-      <li>Pilot: <b>Request landing</b>. Watch the automation log pick a pad.</li>
-      <li>Pilot: <b>Accept · read back</b>. The node verifies the code.</li>
-      <li>Pilot: <b>Engage approach</b>. Follow it on the live window.</li>
-      <li>Ground: try <b>Report obstruction</b> on the assigned pad.</li>
-      <li>Pilot: <b>Propulsion safe</b>, then <b>Request departure</b>.</li>
-    </ol>
+    <div class="row"><button class="btn primary" id="restart">Restart</button><button class="btn" id="pause">Pause</button></div>
+    <details class="opts"><summary>More options</summary>
+      <div class="field"><span>Who approves landings</span><div class="seg"><button class="btn" data-mode="auto" aria-pressed="true">The computer</button><button class="btn" data-mode="supervised" aria-pressed="false">A person</button></div></div>
+      <div class="field"><span>Speed</span><div class="seg"><button class="btn" data-speed="0.5" aria-pressed="false">½×</button><button class="btn" data-speed="1" aria-pressed="true">1×</button><button class="btn" data-speed="2" aria-pressed="false">2×</button><button class="btn" data-speed="4" aria-pressed="false">4×</button></div></div>
+      <div class="field"><span>Autoplay</span><button class="btn" id="autoplay" aria-pressed="false">The pilot flies by itself</button></div>
+    </details>
   </aside>
 </main>
-<footer class="l-foot small muted">Simulation for demonstration. Flight dynamics are illustrative, not validated. Datalink signing uses a demo hash, not real cryptography. The pilot screen is a software concept, not a certified flight-control interface. No FAA compliance is claimed.</footer>
-<script src="n1-link.js"></script><script src="n1-launch.js"></script>
-<script src="site-nav.js"></script></body></html>
+<footer class="l-foot small muted">A simulation for demonstration. Flight dynamics are illustrative. Message signing is a demonstration, not real cryptography. The pilot screen is a software concept, not a certified flight instrument. No aviation regulatory compliance is claimed.</footer>
+<script src="n1-link.js"></script><script src="n1-launch.js"></script><script src="site-nav.js"></script>
+</body></html>

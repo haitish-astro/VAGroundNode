@@ -34,7 +34,7 @@ function createRenderer(canvas) {
   const sky = createSkyEnvironment(renderer); scene.environment = sky.envMap; window.__sceneEnv = sky.envMap; scene.add(sky.dome);
   const camera = new THREE.PerspectiveCamera(45, 1, .1, 2500);
   const controls = new OrbitControls(camera, canvas); controls.enableDamping = true; controls.maxPolarAngle = Math.PI * .48; controls.minDistance = 12; controls.maxDistance = 1100;
-  const overview = () => { camera.position.set(130, 115, 170); controls.target.set(0, 0, 0); controls.update(); };
+  const overview = () => { camera.position.set(70, 62, 118); controls.target.set(0, 6, 8); controls.update(); };
   overview();
   scene.add(new THREE.HemisphereLight('#e5f5ff', '#6a7265', 2.5));
   const sun = new THREE.DirectionalLight('#fff0d9', 3.2); sun.position.set(-80, 150, 60); sun.castShadow = true;
@@ -148,7 +148,7 @@ function createRenderer(canvas) {
   };
 }
 window.GroundNodeRender = { createRenderer };
-await import('./main.js');
+if (!window.__noWebGL) await import('./main.js');
 
 
 

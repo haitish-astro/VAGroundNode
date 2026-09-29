@@ -33,7 +33,7 @@ body.pilot{height:100vh;overflow:hidden}
 
 .guide{display:grid;gap:8px;background:linear-gradient(180deg,#191d26,#12161d);border-color:var(--line2)}
 .guide-head{display:flex;justify-content:space-between;align-items:center}
-.guide h2{font-size:22px;line-height:1.2}
+.panel.guide>h2{font-size:22px;line-height:1.2;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);display:block;margin:0}
 .guide .next{font-size:14px;color:#d5dbe1;min-height:42px}
 .cl-route{display:flex;gap:6px;flex-wrap:wrap}.cl-route:empty{display:none}
 .cl-route span{font-family:var(--mono);font-size:12px;padding:3px 9px;border-radius:99px;border:1px solid rgba(240,151,92,.5);color:var(--accent-2)}
@@ -59,4 +59,4 @@ body.pilot{height:100vh;overflow:hidden}
   .grid{grid-template-columns:1fr}.col{grid-template-rows:none!important}
   .col:nth-child(3){order:-1}.pfd-panel{height:440px}.map-panel{height:380px}.msg-panel{max-height:340px}
 }
-html.embed .progress{display:none}
+html.embed .progress,html.embed .phase,html.embed .who{display:none}html.embed .wrap{padding-top:8px}
